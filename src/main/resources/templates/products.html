@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+
+<head>
+    <title>EkoSklad</title>
+    <div th:replace="allPagesTemplates :: all_pages_head_data"></div>
+    <link rel="stylesheet" th:href="@{/csssource/item_list_stylesheet.css}">
+    <script th:src="@{/jssource/products_page.js}"></script>
+    <script th:src="@{/jssource/utils.js}"></script>
+</head>
+
+
+<body>
+<div th:replace="allPagesTemplates :: navBar"></div>
+
+<style>
+    td {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+</div>
+
+<div class="table-wrapper">
+    <div class="table-title">
+        <div class="row">
+            <div class="col-sm-4">
+                <h2>Eko <b>Склад</b></h2>
+            </div>
+            <div class="col-sm-8">
+                <a class="btn btn-add" title="Добавить группу"
+                   data-toggle="modal"
+                   data-target="#addGroupModal"><i class="material-icons">&#xe147;</i>
+                    <span>Добавить Группу</span></a>
+                <a class="btn btn-primary" title="Добавить Товар"
+                   data-toggle="modal"
+                   data-target="#addProductModal"><i class="material-icons">&#xe147;</i>
+                    <span>Добавить Товар</span></a>
+                <a th:href="@{/products}" class="btn btn-primary"><i class="material-icons">&#xE863;</i>
+                    <span>Сбросить фильтры</span></a>
+            </div>
+        </div>
+    </div>
+    <div class="table-filter">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="show-entries">
+                    <span>Кол-во</span>
+                    <select id="selectPageSize" class="form-control" onchange="location = this.value;">
+                        <option th:value="@{/products(size=5 ,
+                        validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${productsPage.getSize() == 5}">5
+                        </option>
+                        <option th:value="@{/products(size=15 ,
+                             validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${productsPage.getSize() == 15}">15
+                        </option>
+                        <option th:value="@{/products(size=50 ,
+                             validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${productsPage.getSize() == 50}">50
+                        </option>
+                        <option th:value="@{/products(size=100 ,
+                             validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${productsPage.getSize() == 100}">100
+                        </option>
+                    </select>
+                    <span>страниц</span>
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <form th:action="@{/products}" id="searchInputForm" method="get" role="form" autocomplete="off">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>
+                    </button>
+                    <div class="filter-group">
+                        <label>Имя</label>
+                        <input th:value="${nonFullProductName}" type="text" name="nonFullProductName"
+                               class="form-control" id="productNameSearchInput">
+                        <div id="searchProductsList"></div>
+                    </div>
+                </form>
+
+                <div class="filter-group">
+                    <label>Группа</label>
+                    <select id="selectGroup" class="form-control" onchange="location = this.value;">
+                        <option
+                                th:value="@{/products(size=${productsPage.getSize()} ,
+                             validationStatus = ${validationStatus},
+                             groupId = 0 ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${groupId == 0}">Все
+                        </option>
+                        <option th:each="group : ${groups}"
+                                th:value="@{/products(
+                                        size=${productsPage.getSize()} ,
+                              validationStatus = ${validationStatus},
+                             groupId = ${group.getId()},
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${groupId == group.getId() }"
+                                th:text="${group.getName()}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Статус</label>
+                    <select id="selectValidationStatus" class="form-control"
+                            onchange="location = this.value;">
+                        <option th:value="@{/products(
+                                        size=${productsPage.getSize()} ,
+                             validationStatus = null,
+                              groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${validationStatus == null}">Все
+                        </option>
+                        <option th:value="@{/products(
+                                        size=${productsPage.getSize()} ,
+                             validationStatus = true,
+                              groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${validationStatus == true}">Валидируются
+                        </option>
+
+                        <option th:value="@{/products(
+                                        size=${productsPage.getSize()} ,
+                             validationStatus = false,
+                              groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                                th:selected="${validationStatus == false}">Не валидируются
+                        </option>
+
+                    </select>
+                </div>
+                <span class="filter-icon"><i class="fa fa-filter"></i></span>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped table-hover" id="orderListTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th></th>
+            <th>Товар</th>
+            <th>Дата валидации</th>
+            <th></th>
+            <th>Цена</th>
+            <th>Детально</th>
+            <th>Prom.ua</th>
+        </tr>
+        </thead>
+        <tbody th:each="product : ${productsPage}">
+
+        <tr>
+            <td th:text="${product.getId()}"></td>
+            <td><img th:src="@{${product.getMain_image()}}"
+                     width="70" height="70" class="avatar"
+                     alt="Avatar"></td>
+            <td><a th:href="@{/products/{id}/edit(id=${product.getId()})}"
+                   th:text="${product.getName()}">
+            </a></td>
+            </td>
+<!--            <td th:text="${#dates.format(product.getLastValidationDate(), 'dd-MM-yyyy')}"></td>-->
+            <td th:text="${product.getLastValidationDate()!=null} ? ${product.getLastValidationDate().toString()} : '-----' "></td>
+            <td>
+                <span class="status"
+                      th:classappend="${product.isValidationStatus()} ? text-success : text-danger ">&bull;</span>
+            </td>
+            <td th:text="${product.getPrice() + ' ' + product.getCurrency()}">-</td>
+
+            <td><a target="_blank" th:href="@{'/products/' + ${product.getId()} + '/edit'}" class="view"
+                   title="Редактировать" data-toggle="tooltip"><i class="material-icons">&#xE5C8;</i></a>
+            </td>
+
+            <td><a target="_blank" th:href="@{https://my.prom.ua/cms/product/edit/{id}(id=${product.getId()})}"
+                   title="Редактировать на Prom.ua" class="view"><i class="material-icons">visibility</i></a>
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+    <div class="clearfix">
+        <div class="hint-text">Всего позиций по поисковому запросу:  <b th:text="${productsPage.getTotalElements()}"></b></div>
+        <ul class="pagination">
+            <li class="page-item"><a
+                    th:href="@{/products(size=${productsPage.getSize()} ,
+                             validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                    class="page-link"> << </a></li>
+            <li class="page-item"><a
+                    th:href="@{/products(page = ${productsPage.getNumber() - 1},
+                                        size=${productsPage.getSize()} ,
+                            validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                    th:if="${productsPage.getNumber() > 0}"
+                    class="page-link"> < </a></li>
+            <li class="page-item active"><a class="page-link"
+                                            th:text="${productsPage.getNumber()}"></a></li>
+            <li class="page-item"><a
+                    th:href="@{/products(page = ${productsPage.getNumber() + 1},
+                                        size=${productsPage.getSize()} ,
+                             validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                    th:if="${(productsPage.getNumber() + 1) < productsPage.getTotalPages()}"
+                    class="page-link"> > </a></li>
+
+            <li class="page-item"><a
+                    th:href="@{/products(page = ${productsPage.getTotalPages() - 1},
+                                        size=${productsPage.getSize()} ,
+                            validationStatus = ${validationStatus},
+                             groupId = ${groupId} ,
+                             nonFullProductName = ${nonFullProductName})}"
+                    class="page-link"> >> </a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-labelledby="addGroupModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addGroupModalLabel">Добавить группу : </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div><label for="inputGroupId">ID Группы:</label>
+                    <input
+                            id="inputGroupId"
+                            type="number"
+                            class="form-control">
+
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button" id="addGroupLink"  class="btn btn-secondary">Сохранить</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductModalLabel">Добавить товар : </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div><label for="inputProductId">ID Товара : </label>
+                    <input
+                            id="inputProductId"
+                            type="number"
+                            class="form-control">
+
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button" id="addProductLink"  class="btn btn-secondary">Сохранить</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+
+<head>
+    <title th:text="${product.getName()}"></title>
+    <div th:replace="allPagesTemplates :: all_pages_head_data"></div>
+    <link rel="stylesheet" th:href="@{/csssource/item_list_stylesheet.css}">
+    <script th:src="@{/jssource/utils.js}"></script>
+    <script th:src="@{/jssource/product_edit.js}"></script>
+
+</head>
+<body>
+<div th:replace="allPagesTemplates :: navBar"></div>
+
+<div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img class="d-block w-100" th:src="${product.main_image}">
+        </div>
+    </div>
+
+</div>
+
+<div class="table-wrapper">
+    <div class="table-title">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="row-sm-4">
+                    <h2>ID : <b th:text="${product.getId()}"></b></h2>
+                </div>
+                <div class="row-sm-4">
+                    <h2>Currency: <b th:text="${product.getCurrency()}"></b></h2>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <a target="_blank" th:href="@{https://my.prom.ua/cms/product/edit/{id}(id=${product.getId()})}"
+                   class="btn"><i class="material-icons">visibility</i>
+                    <span>Prom.ua</span></a>
+                <button id="checkValid" th:data-prod-id="${product.getId()}" class="btn btn-add"><i
+                        class="material-icons">&#xe147;</i>
+                    <span>Проверить</span></button>
+                <h2 id="validPriceH"><b id="validPrice"></b></h2>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="controls">
+    <form th:action="@{/products/{id}/edit/submit(id=${product.getId()})}" th:object="${product}" method="post"
+          role="form" autocomplete="off">
+
+        <input hidden
+               type="text"
+               th:field="*{id}">
+
+
+        <div class="col-md-7">
+            <h5 style="margin-bottom: 10px"><b th:text="${product.getName()}"></b></h5>
+            <div class="row">
+
+
+                <div class="form-group col-md-12"><label th:for="*{urlForValidating}">Ссылка для валидации:</label>
+                    <input
+                            type="url"
+                            class="form-control"
+                            th:field="*{urlForValidating}">
+                </div>
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="form-group col-md-12"><label th:for="*{cssQueryForValidating}">CssQuery:</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            th:field="*{cssQueryForValidating}">
+
+                </div>
+
+
+            </div>
+            <div class="row">
+
+                <div class="form-group col-md-12">
+
+                    <div class="form-group">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Сохранить</button>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-5">
+
+
+        </div>
+
+    </form>
+    <br>
+</div>
+
+</body>
+</html>

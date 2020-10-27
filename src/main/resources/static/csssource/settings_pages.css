@@ -1,0 +1,15 @@
+
+#settings-slide-bar {
+    /*position: fixed;*/
+    background-color: #3d3f45;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3000;
+    width: 240px;
+    box-sizing: border-box;
+}
+#settings-content
+{
+    margin-top: 30px;
+}

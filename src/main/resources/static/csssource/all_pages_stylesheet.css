@@ -1,0 +1,137 @@
+body {
+    color: #566787;
+    background: #f5f5f5;
+    font-family: 'Varela Round', sans-serif;
+    font-size: 18px;
+}
+
+#paramsDiv {
+    padding-left: 120px;
+
+}
+
+#fields{
+    width: auto;
+}
+
+.orderLinesFooter {
+    padding-top: 20px;
+}
+
+/*.order-edit-row{*/
+/*position: absolute;*/
+/*width: 100%;*/
+/*left: 0;*/
+/*}*/
+.orderLinesFooterTextLine{
+    text-decoration: underline;
+}
+
+.order-price-sum {
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.order-price {
+    font-weight: bold;
+    position: absolute;
+    text-decoration: underline;
+    right: 0;
+    font-size: 20px;
+}
+
+.carousel-item img{
+    width: auto;
+    height: 500px;
+}
+
+.order-edit-group {
+    position: absolute;
+    width: 100%;
+    margin-top: 10px;
+    padding-left: 35px;
+    padding-right: 35px;
+    left: 0;
+}
+
+#orderLines {
+    padding-left: 70px;
+}
+
+#copyNumberButton {
+    padding-right: 40px;
+}
+
+#searchOrderLineProductsList {
+    position: absolute;
+    z-index: 1000;
+    max-height: calc(15 * (1.125em + 8px));
+    /*border-style: solid;*/
+    border-width: 1px;
+    border-radius: 0 0 3px 3px;
+    overflow-y: auto;
+    width: 600px;
+    box-shadow: 0 0 5px #ddd;
+    border-color: #ebebeb;
+}
+
+/*.product-search-editor-res{*/
+/*position: absolute;*/
+/*z-index: 1000;*/
+/*max-height: calc(15 * (1.125em + 8px));*/
+/*!*border-style: solid;*!*/
+/*border-width: 1px;*/
+/*border-radius: 0 0 3px 3px;*/
+/*overflow-y: auto;*/
+/*width: 320px;*/
+/*box-shadow: 0 0 5px #ddd;*/
+/*border-color: #ebebeb;*/
+/*}*/
+
+.selected-list-item{
+background: #c9cccf;
+cursor: pointer;
+border-radius:3px;
+-moz-border-radius:3px;
+-webkit-border-radius:3px;
+}
+
+
+.product-search-editor-res-item:hover {
+    background: #c9cccf;
+    cursor: pointer;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.clients-search-editor-res {
+    position: absolute;
+    z-index: 1000;
+    max-height: calc(15 * (1.125em + 8px));
+    /*border-style: solid;*/
+    border-width: 1px;
+    border-radius: 0 0 3px 3px;
+    overflow-y: auto;
+    width: 400px;
+    box-shadow: 0 0 5px #ddd;
+    border-color: #ebebeb;
+}
+
+.clients-search-editor-res-item:hover {
+    background: #c9cccf;
+    cursor: pointer;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.clients-search-editor-res-item {
+    height: 80px;
+}
+
+.bg-dark {
+    background-color: #4b5366 !important;
+}
