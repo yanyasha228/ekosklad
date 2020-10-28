@@ -83,11 +83,12 @@ public class ProductValidator {
         }).collect(Collectors.toList());
 
         for (Product prFV : productListForValidation) {
-
+            logger.error("Getting valid Price of product id : " + prFV.getId());
             Optional<Float> newPrice = priceValidatorUtils.getValidPriceByCssQuery(prFV.getUrlForValidating(),
                     prFV.getCssQueryForValidating());
 
             if (newPrice.isPresent()) {
+                logger.error("OK id : " + prFV.getId());
                 prFV.setPrice(newPrice.get());
                 prFV.setValidationStatus(true);
                 prFV.updateLastValidationDate();

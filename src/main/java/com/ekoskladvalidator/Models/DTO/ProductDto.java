@@ -21,7 +21,7 @@ public class ProductDto implements Serializable {
     private float price;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private int external_id;
+    private String external_id;
 
     //    @JsonIgnore
 //    private String apiToken;
