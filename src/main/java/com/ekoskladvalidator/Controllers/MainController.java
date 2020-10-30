@@ -47,12 +47,12 @@ public class MainController {
 
     }
 
-    @GetMapping("ref")
-    public String refactEkoApiKeys() throws ImpossibleEntitySaveUpdateException {
-//        refactProductModelUtils.setEkoskladApiKey();
-        refactProductModelUtils.tieRelatedProducts();
-        return "OK";
-    }
+//    @GetMapping("ref")
+//    public String refactEkoApiKeys() throws ImpossibleEntitySaveUpdateException {
+////        refactProductModelUtils.setEkoskladApiKey();
+//        refactProductModelUtils.tieRelatedProducts();
+//        return "OK";
+//    }
 
 
 

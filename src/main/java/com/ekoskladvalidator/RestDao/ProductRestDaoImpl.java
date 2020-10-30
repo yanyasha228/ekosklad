@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductRestDaoImpl implements ProductRestDao {
@@ -65,7 +66,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
     }
 
     @Override
-    public Optional<ProductDto> getProductByIdAndApiToken(int id , PromApiKey promApiKey) {
+    public Optional<ProductDto> getProductByIdAndApiToken(int id, PromApiKey promApiKey) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -151,8 +152,9 @@ public class ProductRestDaoImpl implements ProductRestDao {
         return Collections.emptyList();
 
     }
+
     @Override
-    public List<ProductDto> postProductsByApiToken(PromApiKey promApiKey , List<ProductDto> productDtos) {
+    public List<ProductDto> postProductsByApiToken(PromApiKey promApiKey, List<ProductDto> productDtos) {
 
         List<ProductDto> productDtoResponseList = new ArrayList<>();
         HttpHeaders headers = new HttpHeaders();
@@ -173,13 +175,10 @@ public class ProductRestDaoImpl implements ProductRestDao {
                     ) {
                         if (productDtoIter.getId() == prodUpId) {
                             productDtoResponseList.add(productDtoIter);
-                            logger.error("Posting final WON with id: " + productDtoIter.getId());
-                        } else {
-                            logger.error("Posting final LOSE with id: " + productDtoIter.getId());
                         }
-
                     }
                 }
+                logger.error("Posting Products WON with id: " + "\n" + productDtoResponseList.stream().map(ProductDto::getId).collect(Collectors.toList()));
                 return productDtoResponseList;
             } else {
                 logger.error("LOOOOOOSEEEEE BODY IS NULL");
@@ -193,7 +192,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
     }
 
     @Override
-    public Optional<ProductDto> getProductByExternalIdAndApiToken(int external_id , PromApiKey promApiKey) {
+    public Optional<ProductDto> getProductByExternalIdAndApiToken(int external_id, PromApiKey promApiKey) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", String.format("Bearer %s", promApiKey.getApiKey()));
