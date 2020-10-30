@@ -12,13 +12,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/products")
-public class ProductRestController {
+public class  ProductRestController {
 
     @Autowired
     ProductService productService;
 
     @Autowired
     ProductRestService productRestService;
+
 
 
     @PostMapping("add")
@@ -32,6 +33,7 @@ public class ProductRestController {
                 }
             }
         }
+
     }
 
 

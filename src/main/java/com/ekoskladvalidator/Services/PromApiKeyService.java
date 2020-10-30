@@ -15,4 +15,8 @@ public interface PromApiKeyService {
 
     Optional<PromApiKey> findByApiKey(String apiKey);
 
+    Optional<PromApiKey> findByShopName(String name);
+
+    void  delete(Integer id);
+
 }

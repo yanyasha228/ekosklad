@@ -4,6 +4,8 @@ import com.ekoskladvalidator.Dao.ModelIdApiKeyLineDao;
 import com.ekoskladvalidator.Models.ModelIdApiKeyLine;
 import com.ekoskladvalidator.Models.PromApiKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,11 +39,16 @@ public class ModelIdApiKeyLineServiceImpl implements ModelIdApiKeyLineService {
 
     @Override
     public Optional<ModelIdApiKeyLine> findByProductApiIdAndPromApiKey(Integer productApiId, PromApiKey promApiKey) {
-        return modelIdApiKeyLineDao.findByProductApiIdAndPromApiKey(productApiId,promApiKey);
+        return modelIdApiKeyLineDao.findByProductApiIdAndPromApiKey(productApiId, promApiKey);
     }
 
     @Override
     public Optional<ModelIdApiKeyLine> findByProductIdAndPromApiKey(Integer id, PromApiKey promApiKey) {
-        return modelIdApiKeyLineDao.findByProductIdAndPromApiKey(id,promApiKey);
+        return modelIdApiKeyLineDao.findByProductIdAndPromApiKey(id, promApiKey);
+    }
+
+    @Override
+    public Page<ModelIdApiKeyLine> findAll(Pageable pageable) {
+        return modelIdApiKeyLineDao.findAll(pageable);
     }
 }

@@ -34,5 +34,15 @@ public class PromApiKeyServiceImpl implements PromApiKeyService {
         return promApiKeyDao.findByApiKey(apiKey);
     }
 
+    @Override
+    public Optional<PromApiKey> findByShopName(String name) {
+        return promApiKeyDao.findByShopName(name);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        promApiKeyDao.deleteById(id);
+    }
+
 
 }

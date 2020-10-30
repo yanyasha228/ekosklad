@@ -6,6 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface PromApiKeyDao extends JpaRepository<PromApiKey, Integer> {
+
     Optional<PromApiKey> findByApiKey(String apiKey);
+
+    Optional<PromApiKey> findByShopName(String name);
+
+    void deleteById(Integer id);
 
 }
