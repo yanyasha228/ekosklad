@@ -3,7 +3,7 @@
 <div th:fragment="settings_option_list">
     <div class="list-group" id="settings-slide-bar">
         <link rel="stylesheet" th:href="@{/csssource/settings_pages.css}" >
-        <a href="/settings/shops" th:classappend="${#httpServletRequest.requestURI.contains('shops')} ? active : ''" class="list-group-item list-group-item-action">Ключи</a>
+        <a href="/settings/keys" th:classappend="${#httpServletRequest.requestURI.contains('keys')} ? active : ''" class="list-group-item list-group-item-action">Ключи</a>
     </div>
 </div>
 </html>

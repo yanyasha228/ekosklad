@@ -1,6 +1,8 @@
 package com.ekoskladvalidator.Services;
 
 import com.ekoskladvalidator.Models.PromApiKey;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,5 +20,7 @@ public interface PromApiKeyService {
     Optional<PromApiKey> findByShopName(String name);
 
     void  delete(Integer id);
+
+    Page<PromApiKey> findAll(Pageable pageable);
 
 }

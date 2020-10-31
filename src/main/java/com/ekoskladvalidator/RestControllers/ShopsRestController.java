@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 import java.util.Optional;
 
-@RestController("/rest/keys")
+@RestController
+@RequestMapping("/rest/keys")
 public class ShopsRestController {
 
     @Autowired
@@ -19,7 +20,7 @@ public class ShopsRestController {
         return promApiKeyService.findById(id).orElse(null);
     }
 
-    @PostMapping("add")
+    @PostMapping("/add")
     public void addKey(@RequestParam String key, @RequestParam String name) {
 
         if (!Objects.isNull(name) && !name.isEmpty() && !Objects.isNull(key) && !key.isEmpty()) {
@@ -34,7 +35,7 @@ public class ShopsRestController {
         }
     }
 
-    @PostMapping("edit")
+    @PostMapping("/edit")
     public void editKey(@RequestParam Integer id, @RequestParam String key, @RequestParam String name) {
         if (!Objects.isNull(id) && id != 0) {
             if (!Objects.isNull(name) && !name.isEmpty() && !Objects.isNull(key) && !key.isEmpty()) {

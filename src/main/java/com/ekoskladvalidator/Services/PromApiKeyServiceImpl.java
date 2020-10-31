@@ -3,6 +3,8 @@ package com.ekoskladvalidator.Services;
 import com.ekoskladvalidator.Dao.PromApiKeyDao;
 import com.ekoskladvalidator.Models.PromApiKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +44,11 @@ public class PromApiKeyServiceImpl implements PromApiKeyService {
     @Override
     public void delete(Integer id) {
         promApiKeyDao.deleteById(id);
+    }
+
+    @Override
+    public Page<PromApiKey> findAll(Pageable pageable) {
+        return promApiKeyDao.findAll(pageable);
     }
 
 

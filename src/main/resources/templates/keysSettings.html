@@ -13,13 +13,22 @@
 <body>
 <div th:replace="allPagesTemplates :: navBar"></div>
 
+<style>
+    td {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
 <div class="row">
 
-    <div class="col-sm-3">
+    <div class="col-sm-2">
         <div th:replace="settingsFragments :: settings_option_list"></div>
     </div>
 
-    <div class="col-sm-9">
+    <div class="col-sm-10">
 
         <div class="table-wrapper">
 
@@ -53,21 +62,18 @@
                         <div class="show-entries">
                             <span>Кол-во</span>
                             <select id="selectPageSize" class="form-control" onchange="location = this.value;">
-                                <option th:value="@{/settings/rozetka/params(size=5,
-                              searchName= ${searchName})}"
-                                        th:selected="${paramsPage.getSize() == 5}">5
+                                <option th:value="@{/settings/keys(size=5)}"
+                                        th:selected="${keysPage.getSize() == 5}">5
                                 </option>
-                                <option th:value="@{/settings/rozetka/params(size=15,
-                             searchName = ${searchName})}"
-                                        th:selected="${paramsPage.getSize() == 15}">15
+                                <option th:value="@{/settings/keys(size=15)}"
+                                        th:selected="${keysPage.getSize() == 15}">15
                                 </option>
-                                <option th:value="@{/settings/rozetka/params(size=50,
-                             searchName = ${searchName})}"
-                                        th:selected="${paramsPage.getSize() == 50}">50
+
+                                <option th:value="@{/settings/keys(size=50)}"
+                                        th:selected="${keysPage.getSize() == 50}">50
                                 </option>
-                                <option th:value="@{/settings/rozetka/params(size=100,
-                             searchName = ${searchName})}"
-                                        th:selected="${paramsPage.getSize() == 100}">100
+                                <option th:value="@{/settings/keys(size=100)}"
+                                        th:selected="${keysPage.getSize() == 100}">100
                                 </option>
                             </select>
                             <span>страниц</span>
@@ -106,13 +112,26 @@
                 </tr>
                 </thead>
 
-                <tbody th:each="paramRoz : ${paramsPage}">
+                <tbody th:each="paramRoz : ${keysPage}">
 
                 <tr>
 
                     <td th:text="${paramRoz.getId()}"></td>
 
-                    <td style="" th:text="${paramRoz.getName()}"></td>
+                    <td style="" th:text="${paramRoz.getShopName()}"></td>
+
+                    <td th:text = "${paramRoz.getApiKey()}"></td>
+
+                    <td>
+                        <a href="#" class="delete"
+                           title="Редактировать"
+                           data-toggle="modal"
+                           data-target="#editParamModal"
+                           th:data-param-id="${paramRoz.getId()}"
+                           th:data-param-name="${paramRoz.getShopName()}"
+                           th:data-param-key="${paramRoz.getApiKey()}">
+                            <i class="material-icons">&#xE5C8;</i></a>
+                    </td>
 
                     <td>
                         <a href="#" class="delete"
@@ -120,7 +139,7 @@
                            data-toggle="modal"
                            data-target="#deleteParamModal"
                            th:data-param-id="${paramRoz.getId()}"
-                           th:data-param-name="${paramRoz.getName()}">
+                           th:data-param-name="${paramRoz.getShopName()}">
                             <i class="material-icons">&#xe5cd;</i></a>
                     </td>
 
@@ -131,34 +150,30 @@
             <div class="clearfix">
 
                 <div class="hint-text">Всего позиций по поисковому запросу: <b
-                        th:text="${paramsPage.getTotalElements()}"></b>
+                        th:text="${keysPage.getTotalElements()}"></b>
                 </div>
 
 
                 <ul class="pagination">
                     <li class="page-item"><a
-                            th:href="@{/settings/rozetka/params(size=${paramsPage.getSize()},
-                             searchName = ${searchName})}"
+                            th:href="@{/settings/keys(size=${keysPage.getSize()})}"
                             class="page-link"> << </a></li>
                     <li class="page-item"><a
-                            th:href="@{/settings/rozetka/params(page = ${paramsPage.getNumber()-1},
-                    size=${paramsPage.getSize()} ,
-                             searchName = ${searchName})}"
-                            th:if="${paramsPage.getNumber() > 0}"
+                            th:href="@{/settings/keys(page = ${keysPage.getNumber()-1},
+                    size=${keysPage.getSize()})}"
+                            th:if="${keysPage.getNumber() > 0}"
                             class="page-link"> < </a></li>
                     <li class="page-item active"><a class="page-link"
-                                                    th:text="${paramsPage.getNumber()}"></a></li>
+                                                    th:text="${keysPage.getNumber()}"></a></li>
                     <li class="page-item"><a
-                            th:href="@{/settings/rozetka/params(page = ${paramsPage.getNumber()+1},
-                    size=${paramsPage.getSize()},
-                             searchName = ${searchName})}"
-                            th:if="${(paramsPage.getNumber() + 1) < paramsPage.getTotalPages()}"
+                            th:href="@{/settings/keys(page = ${keysPage.getNumber()+1},
+                    size=${keysPage.getSize()})}"
+                            th:if="${(keysPage.getNumber() + 1) < keysPage.getTotalPages()}"
                             class="page-link"> > </a></li>
 
                     <li class="page-item"><a
-                            th:href="@{/settings/rozetka/params(page = ${paramsPage.getTotalPages()-1},
-                    size=${paramsPage.getSize()},
-                             searchName = ${searchName})}"
+                            th:href="@{/settings/keys(page = ${keysPage.getTotalPages()-1},
+                    size=${keysPage.getSize()})}"
                             class="page-link"> >> </a></li>
                 </ul>
             </div>
@@ -171,7 +186,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addParamModalLabel">Добавить параметр : </h5>
+                <h5 class="modal-title" id="addParamModalLabel">Добавить ключ : </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true"></span>
                 </button>
@@ -184,9 +199,18 @@
                     <label for="inputParamName">Название : </label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id=""> </span>
+                            <span class="input-group-text"> </span>
                         </div>
                         <input type="text" class="form-control" id="inputParamName"
+                               aria-describedby="inputGroup-sizing-sm">
+                    </div>
+
+                    <label for="inputParamName">Ключ : </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> </span>
+                        </div>
+                        <input type="text" class="form-control" id="inputParamKey"
                                aria-describedby="inputGroup-sizing-sm">
                     </div>
 
@@ -206,12 +230,60 @@
     </div>
 </div>
 
+<div class="modal fade" id="editParamModal" tabindex="-1" role="dialog" aria-labelledby="editParamModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editParamModalLabel">Редактировать ключ : </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="controls">
+
+                    <label for="inputParamName">Название : </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> </span>
+                        </div>
+                        <input type="text" class="form-control" id="editInputParamName"
+                               aria-describedby="inputGroup-sizing-sm">
+                    </div>
+
+                    <label for="inputParamName">Ключ : </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> </span>
+                        </div>
+                        <input type="text" class="form-control" id="editInputParamKey"
+                               aria-describedby="inputGroup-sizing-sm">
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button" id="editParamButton" class="btn btn-secondary">Редактировать</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="deleteParamModal" tabindex="-1" role="dialog" aria-labelledby="deleteParamModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteParamModalLabel">Удаление параметра</h5>
+                <h5 class="modal-title" id="deleteParamModalLabel">Удаление ключа</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -221,7 +293,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <h3><b>Удалить параметр?</b></M></h3>
+                    <h3><b>Удалить ключ?</b></M></h3>
                 </div>
             </div>
             <div class="modal-footer">
