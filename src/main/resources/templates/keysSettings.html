@@ -107,6 +107,7 @@
                     <th>ID</th>
                     <th>Название</th>
                     <th>Ключи</th>
+                    <th>Редактировать</th>
                     <th>Удалить</th>
 
                 </tr>
@@ -123,7 +124,7 @@
                     <td th:text = "${paramRoz.getApiKey()}"></td>
 
                     <td>
-                        <a href="#" class="delete"
+                        <a href="#" class="view"
                            title="Редактировать"
                            data-toggle="modal"
                            data-target="#editParamModal"
@@ -244,7 +245,7 @@
 
                 <div class="controls">
 
-                    <label for="inputParamName">Название : </label>
+                    <label for="editInputParamName">Название : </label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"> </span>
@@ -253,7 +254,7 @@
                                aria-describedby="inputGroup-sizing-sm">
                     </div>
 
-                    <label for="inputParamName">Ключ : </label>
+                    <label for="editInputParamKey">Ключ : </label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"> </span>

@@ -31,9 +31,10 @@ public class ProductMapper {
             product.setValidationStatus(oldProduct.isValidationStatus());
             product.setDataForValidatingExist(oldProduct.isDataForValidatingExist());
             product.setValidationStatus(oldProduct.isValidationStatus());
-        } else {
-            product.setId(0);
         }
+//        else {
+//            product.setId(0);
+//        }
 
         return product;
 //        return Objects.isNull(productDto) ? null : mapper.map(productDto, Product.class);

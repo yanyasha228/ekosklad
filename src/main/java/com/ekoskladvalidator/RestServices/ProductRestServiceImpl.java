@@ -9,9 +9,6 @@ import com.ekoskladvalidator.RestDao.GroupRestDao;
 import com.ekoskladvalidator.RestDao.ProductRestDao;
 import com.ekoskladvalidator.Services.GroupService;
 import com.ekoskladvalidator.Services.ProductService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +40,12 @@ public class ProductRestServiceImpl implements ProductRestService {
     }
 
     @Override
+    public Optional<Product> getProductByIdAndApiToken(int id, PromApiKey promApiKey) {
+        Product product = productMapper.toEntity(productRestDao.getProductByIdAndApiToken(id, promApiKey).orElse(null));
+        return Optional.ofNullable(product);
+    }
+
+    @Override
     public Optional<Product> getProductByExternalIdAndApiToken(int external_id, PromApiKey promApiKey) {
 
         Product product = productMapper.toEntity(productRestDao.getProductByExternalIdAndApiToken(external_id, promApiKey).orElse(null));
@@ -57,15 +60,49 @@ public class ProductRestServiceImpl implements ProductRestService {
 
         for (Product pr : productService.findAll()) {
 
-            Optional<ProductDto> prodToAdd = productRestDao.getProductById(pr.getId());
+            Optional<Product> prodOpt = getProduct(pr);
 
-            prodToAdd.ifPresent(productDto -> productList.add(productMapper.toEntity(productDto)));
+            prodOpt.ifPresent(productList::add);
 
             Thread.sleep(150);
 
         }
 
         return productList;
+    }
+
+    @Override
+    public List<Product> getProducts(List<Product> prodList) throws InterruptedException {
+        List<Product> productList = new ArrayList<>();
+
+        for (Product pr : prodList) {
+
+            Optional<Product> prodOpt = getProduct(pr);
+
+            prodOpt.ifPresent(productList::add);
+
+            Thread.sleep(150);
+
+        }
+
+        return productList;
+    }
+
+    @Override
+    public Optional<Product> getProduct(Product product) {
+        Optional<ModelIdApiKeyLine> modelIdApiKeyLine = product.getModelIdApiKeyLines().stream()
+                .filter(modLine -> modLine.getProductApiId() == product.getId()).findFirst();
+
+        if (modelIdApiKeyLine.isPresent()) {
+
+            Product productT = productMapper.toEntity(productRestDao.getProductByIdAndApiToken(modelIdApiKeyLine.get().getProductApiId(), modelIdApiKeyLine.get().getPromApiKey()).orElse(null));
+
+            return Optional.ofNullable(productT);
+
+        }
+
+        return Optional.empty();
+
     }
 
     @Override

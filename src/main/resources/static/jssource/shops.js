@@ -23,12 +23,15 @@ $(function () {
 
         var paramId = $(this).data('param-id');
         var paramKey = $('#editInputParamKey').val();
+        var paramName = $('#editInputParamName').val();
         var dFs= {
-            id : paramId
+            id : paramId ,
+            key : paramKey,
+            name: paramName
         };
 
         $.ajax({
-            url: location.origin + "/rest/keys/delete",
+            url: location.origin + "/rest/keys/edit",
             dataType: 'json',
             type: 'POST',
             data: dFs

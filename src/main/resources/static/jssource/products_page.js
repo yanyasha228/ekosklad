@@ -34,9 +34,11 @@ $(function () {
 
     $(document).on('click', '#addProductLink', function (ev) {
 
-        var productId = $('#inputProductId').val();
+        var productId = $('#inputId').val();
+        var keyIdPR = $('#selectKeyModal').val();
         var dFs= {
-            id : productId
+            id : productId ,
+            keyId : keyIdPR
         };
 
         $.ajax({

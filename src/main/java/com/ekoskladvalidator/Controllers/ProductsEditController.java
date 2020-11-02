@@ -41,11 +41,12 @@ public class ProductsEditController {
     }
 
     @PostMapping("submit")
-    public String editProductSubmit(Model model, @RequestParam Integer productId,
+    public String editProductSubmit(Model model,
+                                    @RequestParam Integer productId,
                                     @RequestParam String urlForValidation,
                                     @RequestParam String cssQueryForValidating,
                                     @RequestParam Integer[] keyId,
-                                    @RequestParam Integer[] productApiId) {
+                                    @RequestParam Integer[] productApiId) throws ImpossibleEntitySaveUpdateException {
 
         Optional<Product> appropriateProductFromDBOpt = productService.findById(productId);
 
@@ -54,7 +55,6 @@ public class ProductsEditController {
         if (appropriateProductFromDBOpt.isPresent()) {
             savedProduct = productService.updateValidationCredentials(productId, urlForValidation, cssQueryForValidating, keyId, productApiId);
             try {
-
 
                 productValidator.validateOne(savedProduct);
             } catch (ImpossibleEntitySaveUpdateException | InterruptedException e) {

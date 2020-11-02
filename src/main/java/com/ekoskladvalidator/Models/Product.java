@@ -35,7 +35,7 @@ public class Product implements Serializable {
     private String currency;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "product",  orphanRemoval = true)
     List<ModelIdApiKeyLine> modelIdApiKeyLines = new ArrayList<>();
 
     @Column

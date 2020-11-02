@@ -23,8 +23,12 @@ public class MainTest {
 
     @Test
     public void test() throws InterruptedException {
-        List<Product> productList = productService.findAll();
-        List<Product> productList1 = productRestService.postProducts(productList);
+        Product product = productService.findById(718028987).get();
+
+        List<Product> prodList = productService.findAll().subList(0, 10);
+        Product restProd = productRestService.getProduct(product).orElse(null);
+        List<Product> restProdList = productRestService.getProducts(prodList);
+        int i = 0;
     }
 
 }

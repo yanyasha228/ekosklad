@@ -28,7 +28,7 @@ public interface ProductService {
                                         String urlForValidation,
                                         String cssQueryForValidating,
                                         Integer[] keyId,
-                                        Integer[] productApiId);
+                                        Integer[] productApiId) throws ImpossibleEntitySaveUpdateException;
 
     List<Product> findProductByNonFullProductNameRegardlessOfTheWordsOrder(String nonFullProductName);
 
@@ -62,7 +62,7 @@ public interface ProductService {
                                                                                                   boolean validationStatus,
                                                                                                   Pageable pageable);
 
-    public Page<Product> findProductsWithPagination(String nonFullProductName,
+    Page<Product> findProductsWithPagination(String nonFullProductName,
                                                     Group group,
                                                     Boolean validationStatus,
                                                     Pageable pageable);

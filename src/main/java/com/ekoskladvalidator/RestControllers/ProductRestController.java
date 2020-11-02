@@ -1,35 +1,59 @@
 package com.ekoskladvalidator.RestControllers;
 
 import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
+import com.ekoskladvalidator.Models.ModelIdApiKeyLine;
 import com.ekoskladvalidator.Models.Product;
+import com.ekoskladvalidator.Models.PromApiKey;
 import com.ekoskladvalidator.RestServices.ProductRestService;
+import com.ekoskladvalidator.Services.ModelIdApiKeyLineService;
 import com.ekoskladvalidator.Services.ProductService;
+import com.ekoskladvalidator.Services.PromApiKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/products")
-public class  ProductRestController {
+public class ProductRestController {
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     @Autowired
-    ProductRestService productRestService;
+    private ProductRestService productRestService;
 
+    @Autowired
+    private PromApiKeyService promApiKeyService;
+
+    @Autowired
+    private ModelIdApiKeyLineService modelIdApiKeyLineService;
 
 
     @PostMapping("add")
-    public void addProduct(@RequestParam Integer id) throws ImpossibleEntitySaveUpdateException {
+    @Transactional
+    public void addProduct(@RequestParam Integer id, @RequestParam Integer keyId) throws ImpossibleEntitySaveUpdateException {
 
-        if (id > 0) {
+        if (Objects.nonNull(id) && id > 0 && Objects.nonNull(keyId) && keyId > 0) {
             if (!productService.findById(id).isPresent()) {
-                Optional<Product> productRest = productRestService.getProductById(id);
-                if (productRest.isPresent()) {
-                    productService.save(productRest.get());
+                Optional<PromApiKey> promApiKey = promApiKeyService.findById(keyId);
+                if(promApiKey.isPresent()) {
+                    Optional<Product> productRest = productRestService.getProductByIdAndApiToken(id , promApiKey.get());
+                    if (productRest.isPresent()) {
+                        Product prodToEd = productService.save(productRest.get());
+                        ModelIdApiKeyLine modelIdApiKeyLine = new ModelIdApiKeyLine();
+                        modelIdApiKeyLine.setProductApiId(prodToEd.getId());
+                        modelIdApiKeyLine.setProduct(prodToEd);
+                        modelIdApiKeyLine.setPromApiKey(promApiKey.get());
+                        ModelIdApiKeyLine mod = modelIdApiKeyLineService.save(modelIdApiKeyLine);
+                        prodToEd.getModelIdApiKeyLines().add(mod);
+                        productService.save(prodToEd);
+
+
+                    }
                 }
             }
         }

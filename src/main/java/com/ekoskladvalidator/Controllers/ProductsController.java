@@ -3,6 +3,7 @@ package com.ekoskladvalidator.Controllers;
 import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Services.GroupService;
 import com.ekoskladvalidator.Services.ProductService;
+import com.ekoskladvalidator.Services.PromApiKeyService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,9 @@ public class ProductsController {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private PromApiKeyService promApiKeyService;
 
     @GetMapping
     public String productsList(Model model,
@@ -56,6 +60,8 @@ public class ProductsController {
 
 
         model.addAttribute("groups", groupService.findAll());
+
+        model.addAttribute("keys", promApiKeyService.findAll());
 
         return "products";
     }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DbRestSynchronizer {
@@ -21,7 +22,6 @@ public class DbRestSynchronizer {
 
     @Autowired
     private ProductRestService productRestService;
-
 
 
     public List<Product> synchronizeDbProductsWithRestApiModels() {
@@ -37,11 +37,13 @@ public class DbRestSynchronizer {
     }
 
     public Product synchronizeOneDbProductWithRestApiModel(Product productForSync) throws ImpossibleEntitySaveUpdateException {
-
-        return productService.save(productRestService.getProductById(productForSync.getId()).orElse(null));
+        Optional<Product> productOpt = productRestService.getProduct(productForSync);
+        if (productOpt.isPresent()) {
+            return productService.save(productOpt.get());
+        }
+        return null;
 
     }
-
 
 
     private List<Product> synchronizeProducts() throws InterruptedException {
@@ -49,7 +51,6 @@ public class DbRestSynchronizer {
         return productService.save(productRestService.getAll());
 
     }
-
 
 
 }

@@ -1,15 +1,20 @@
 package com.ekoskladvalidator.Services;
 
 import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
+import com.ekoskladvalidator.Dao.ModelIdApiKeyLineDao;
 import com.ekoskladvalidator.Dao.ProductDao;
+import com.ekoskladvalidator.Dao.PromApiKeyDao;
 import com.ekoskladvalidator.Models.Group;
+import com.ekoskladvalidator.Models.ModelIdApiKeyLine;
 import com.ekoskladvalidator.Models.Product;
+import com.ekoskladvalidator.Models.PromApiKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductDao productDao;
+
+    @Autowired
+    private PromApiKeyDao promApiKeyDao;
+
+    @Autowired
+    private ModelIdApiKeyLineDao modelIdApiKeyLineDao;
 
     @Override
     public Product save(Product product) throws ImpossibleEntitySaveUpdateException {
@@ -67,8 +78,42 @@ public class ProductServiceImpl implements ProductService {
         return productDao.findProductByName(name);
     }
 
+    @Transactional
     @Override
-    public Product updateValidationCredentials(Integer productId, String urlForValidation, String cssQueryForValidating, Integer[] keyId, Integer[] productApiId) {
+    public Product updateValidationCredentials(Integer productId, String urlForValidation, String cssQueryForValidating, Integer[] keyId, Integer[] productApiId) throws ImpossibleEntitySaveUpdateException {
+
+        List<ModelIdApiKeyLine> modelIdApiKeyLines = new ArrayList<>();
+        Optional<Product> productOpt = productDao.findById(productId);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            if (keyId != null && productApiId != null) {
+                if (keyId.length != productApiId.length)
+                    throw new ImpossibleEntitySaveUpdateException("ArrLenght doesnt match");
+            } else throw new ImpossibleEntitySaveUpdateException("Null productLines dependent Arrays");
+
+            for (int i = 0; i < keyId.length; i++) {
+                ModelIdApiKeyLine modelIdApiKeyLine = new ModelIdApiKeyLine();
+                Optional<PromApiKey> promApiKey = promApiKeyDao.findById(keyId[i]);
+                if (promApiKey.isPresent()) {
+                    modelIdApiKeyLine.setProduct(product);
+                    modelIdApiKeyLine.setPromApiKey(promApiKey.get());
+                    modelIdApiKeyLine.setProductApiId(productApiId[i]);
+                    modelIdApiKeyLines.add(modelIdApiKeyLine);
+                }
+
+            }
+
+            List<ModelIdApiKeyLine> modelIdApiKeyLinesPers = modelIdApiKeyLineDao.saveAll(modelIdApiKeyLines);
+
+            modelIdApiKeyLineDao.deleteAll(product.getModelIdApiKeyLines());
+
+            product.getModelIdApiKeyLines().clear();
+
+            product.getModelIdApiKeyLines().addAll(modelIdApiKeyLinesPers);
+
+            return productDao.save(product);
+
+        }
 
 
         return null;

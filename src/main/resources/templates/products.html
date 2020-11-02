@@ -31,10 +31,10 @@
                 <h2>Eko <b>Склад</b></h2>
             </div>
             <div class="col-sm-8">
-                <a class="btn btn-add" title="Добавить группу"
-                   data-toggle="modal"
-                   data-target="#addGroupModal"><i class="material-icons">&#xe147;</i>
-                    <span>Добавить Группу</span></a>
+<!--                <a class="btn btn-add" title="Добавить группу"-->
+<!--                   data-toggle="modal"-->
+<!--                   data-target="#addGroupModal"><i class="material-icons">&#xe147;</i>-->
+<!--                    <span>Добавить Группу</span></a>-->
                 <a class="btn btn-primary" title="Добавить Товар"
                    data-toggle="modal"
                    data-target="#addProductModal"><i class="material-icons">&#xe147;</i>
@@ -166,10 +166,11 @@
                      width="70" height="70" class="avatar"
                      alt="Avatar"></td>
             <td><a th:href="@{/products/{id}/edit(id=${product.getId()})}"
-                   th:text="${product.getName()}">
+                   th:text="${product.getName()}"
+                   th:title="${product.getName()}">
             </a></td>
             </td>
-<!--            <td th:text="${#dates.format(product.getLastValidationDate(), 'dd-MM-yyyy')}"></td>-->
+            <!--            <td th:text="${#dates.format(product.getLastValidationDate(), 'dd-MM-yyyy')}"></td>-->
             <td th:text="${product.getLastValidationDate()!=null} ? ${product.getLastValidationDate().toString()} : '-----' "></td>
             <td>
                 <span class="status"
@@ -190,7 +191,8 @@
         </tbody>
     </table>
     <div class="clearfix">
-        <div class="hint-text">Всего позиций по поисковому запросу:  <b th:text="${productsPage.getTotalElements()}"></b></div>
+        <div class="hint-text">Всего позиций по поисковому запросу: <b th:text="${productsPage.getTotalElements()}"></b>
+        </div>
         <ul class="pagination">
             <li class="page-item"><a
                     th:href="@{/products(size=${productsPage.getSize()} ,
@@ -252,7 +254,7 @@
 
             <div class="modal-footer">
 
-                <button type="button" id="addGroupLink"  class="btn btn-secondary">Сохранить</button>
+                <button type="button" id="addGroupLink" class="btn btn-secondary">Сохранить</button>
 
             </div>
 
@@ -272,11 +274,30 @@
             </div>
             <div class="modal-body">
 
-                <div><label for="inputProductId">ID Товара : </label>
-                    <input
-                            id="inputProductId"
-                            type="number"
-                            class="form-control">
+                <div class="controls">
+
+                    <label for="selectKeyModal">Ключ : </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> </span>
+                        </div>
+                        <select id="selectKeyModal" class="form-control">
+                            <option th:each="key : ${keys}"
+                                    th:value="${key.getId()}"
+                                    th:text="${key.getShopName()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <label for="inputId">Prom Id : </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> </span>
+                        </div>
+                        <input type="text" class="form-control" id="inputId"
+                               aria-describedby="inputGroup-sizing-sm">
+                    </div>
+
 
                 </div>
             </div>
@@ -284,15 +305,13 @@
 
             <div class="modal-footer">
 
-                <button type="button" id="addProductLink"  class="btn btn-secondary">Сохранить</button>
+                <button type="button" id="addProductLink" class="btn btn-secondary">Сохранить</button>
 
             </div>
 
         </div>
     </div>
 </div>
-
-
 
 
 </body>

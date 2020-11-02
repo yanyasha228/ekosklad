@@ -44,7 +44,7 @@ public class ProductValidator {
     private ProductValidatorUtils priceValidatorUtils;
 
 
-//    @Scheduled(fixedDelay = 12000000)
+    @Scheduled(fixedDelay = 12000000)
     public void validateProducts() throws InterruptedException {
 
         List<Product> syncProductList = dbRestSynchronizer.synchronizeDbProductsWithRestApiModels();
