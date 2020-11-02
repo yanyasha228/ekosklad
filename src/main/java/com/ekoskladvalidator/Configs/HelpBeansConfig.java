@@ -33,4 +33,5 @@ public class HelpBeansConfig {
     public RestTemplate getRestTemplate() {
         return new RestTemplateBuilder().errorHandler(new RestTemplateResponseErrorHandler()).build();
     }
+
 }

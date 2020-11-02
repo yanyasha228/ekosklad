@@ -7,11 +7,17 @@
     <link rel="stylesheet" th:href="@{/csssource/item_list_stylesheet.css}">
     <script th:src="@{/jssource/utils.js}"></script>
     <script th:src="@{/jssource/product_edit.js}"></script>
+    <script type="text/javascript" th:src="@{/jssource/supplies_create.js}"></script>
 
 </head>
 <body>
 <div th:replace="allPagesTemplates :: navBar"></div>
 
+<style>
+    #productLines {
+        padding-left: 70px;
+    }
+</style>
 <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
 
     <div class="carousel-inner">
@@ -32,6 +38,9 @@
                 <div class="row-sm-4">
                     <h2>Currency: <b th:text="${product.getCurrency()}"></b></h2>
                 </div>
+                <div class="row-sm-4">
+                    <h2>Name: <b th:text="${product.getName()}"></b></h2>
+                </div>
             </div>
             <div class="col-sm-4">
                 <a target="_blank" th:href="@{https://my.prom.ua/cms/product/edit/{id}(id=${product.getId()})}"
@@ -46,63 +55,163 @@
         </div>
     </div>
 </div>
-<div class="controls">
-    <form th:action="@{/products/{id}/edit/submit(id=${product.getId()})}" th:object="${product}" method="post"
-          role="form" autocomplete="off">
 
-        <input hidden
-               type="text"
-               th:field="*{id}">
-
-
-        <div class="col-md-7">
-            <h5 style="margin-bottom: 10px"><b th:text="${product.getName()}"></b></h5>
-            <div class="row">
+<div class="container">
+    <div class="row">
+        <div class="control-group order-edit-group" id="fields">
+            <div class="controls">
+                <form id="orderForm" th:action="@{/products/{id}/edit/submit(id=${product.getId()})}""
+                      method="post"
+                      role="form" autocomplete="off">
+                    <div class="form-row">
 
 
-                <div class="form-group col-md-12"><label th:for="*{urlForValidating}">Ссылка для валидации:</label>
-                    <input
-                            type="url"
-                            class="form-control"
-                            th:field="*{urlForValidating}">
-                </div>
+                        <div class="form-group col-md-7">
+
+                            <input hidden
+                                   type="text"
+                                   name="porductId"
+                                   th:value="${product.getId()}">
 
 
-            </div>
-
-            <div class="row">
-
-                <div class="form-group col-md-12"><label th:for="*{cssQueryForValidating}">CssQuery:</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            th:field="*{cssQueryForValidating}">
-
-                </div>
+                            <div class="row">
 
 
-            </div>
-            <div class="row">
+                                <div class="form-group col-md-12"><label for="urlForValidation">Ссылка для
+                                    валидации:</label>
+                                    <input
+                                            type="url"
+                                            class="form-control"
+                                            id="urlForValidation"
+                                            name="urlForValidation"
+                                            th:value="${product.getUrlForValidating()}">
+                                </div>
 
-                <div class="form-group col-md-12">
 
-                    <div class="form-group">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Сохранить</button>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="form-group col-md-12"><label
+                                        for="cssQueryForValidating">CssQuery:</label>
+                                    <input
+                                            type="text"
+                                            name="cssQueryForValidating"
+                                            id="cssQueryForValidating"
+                                            class="form-control"
+                                            th:value="${product.getUrlForValidating()}">
+
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+
+                                <div class="form-group col-md-12">
+
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                                            Сохранить
+                                        </button>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                        <div id="productLines" class="form-group col-md-5"
+                             th:if="${product.getModelIdApiKeyLines().size()>0} ">
+                            <label for="productLines">Ключи:</label>
+                            <div class="controls-1">
+
+                                <div id="productLine" class="entry"
+                                     th:each="keyLine , iterStat: ${product.getModelIdApiKeyLines()}">
+                                    <div class="form-row">
+
+                                        <div class="form-group col-md-4" id="inputOrdProdNameDiv">
+
+                                            <label for="selectKey">Ключ</label>
+                                            <select id="selectKey" name="keyId" class="form-control">
+                                                <option th:each="key : ${keys}"
+                                                        th:value="${key.getId()}"
+                                                        th:text="${key.getShopName()}"
+                                                        th:selected="${key.getId() == keyLine.getPromApiKey().getId()}">
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label for="productId">Prom ID</label>
+                                            <input class="form-control" th:value="${keyLine.getProductApiId()}"
+                                                   name="productId"
+                                                   id="productId" type="number"/>
+                                        </div>
+
+                                        <div class="form-group col-md-1">
+                                                            <span class="input-group-btn">
+                                                            <button th:classappend="${iterStat.last} ? 'btn btn-success btn-add' : 'btn btn-danger btn-remove'" type="button">
+                                                                <span th:classappend="${iterStat.last} ? 'glyphicon glyphicon-plus' : 'glyphicon glyphicon-minus'"></span>
+                                                            </button>
+                                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div id="productLines" class="form-group col-md-5"
+                             th:if="${product.getModelIdApiKeyLines().size()==0} ">
+                            <label for="productLines">Позиции поставки:</label>
+                            <div class="controls-1">
+
+                                <div id="productLine" class="entry">
+                                    <div class="form-row">
+
+                                        <div class="form-group col-md-4" id="inputOrdProdNameDiv">
+
+                                            <label for="selectKey">Ключ</label>
+                                            <select id="selectKey" name="keyId" class="form-control">
+                                                <option th:each="key : ${keys}"
+                                                        th:value="${key.getId()}"
+                                                        th:text="${key.getShopName()}">
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label for="productId">Prom ID</label>
+                                            <input class="form-control"
+                                                   name="productId"
+                                                   id="productId" type="number"/>
+                                        </div>
+
+                                        <div class="form-group col-md-1">
+                                                            <span class="input-group-btn">
+                                                            <button class="btn btn-success btn-add" type="button">
+                                                                <span class="glyphicon glyphicon-plus"></span>
+                                                            </button>
+                                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
                     </div>
-
-                </div>
-
-
+                </form>
+                <br>
             </div>
         </div>
-
-        <div class="col-md-5">
-
-
-        </div>
-
-    </form>
-    <br>
+    </div>
 </div>
 
 </body>

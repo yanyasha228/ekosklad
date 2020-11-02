@@ -3,6 +3,7 @@ package com.ekoskladvalidator.Controllers;
 import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
 import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Services.ProductService;
+import com.ekoskladvalidator.Services.PromApiKeyService;
 import com.ekoskladvalidator.Validators.ProductValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class ProductsEditController {
     @Autowired
     private ProductValidator productValidator;
 
+    @Autowired
+    private PromApiKeyService promApiKeyService;
+
     @GetMapping
     public String editProduct(Model model, @PathVariable Integer id) {
 
@@ -31,27 +35,31 @@ public class ProductsEditController {
 
         model.addAttribute("product", product);
 
+        model.addAttribute("keys", promApiKeyService.findAll());
+
         return "editProduct";
     }
 
     @PostMapping("submit")
-    public String editProductSubmit(Model model, @ModelAttribute(name = "product") Product product) {
+    public String editProductSubmit(Model model, @RequestParam Integer productId,
+                                    @RequestParam String urlForValidation,
+                                    @RequestParam String cssQueryForValidating,
+                                    @RequestParam Integer[] keyId,
+                                    @RequestParam Integer[] productApiId) {
 
-        Optional<Product> appropriateProductFromDBOpt = productService.findById(product.getId());
+        Optional<Product> appropriateProductFromDBOpt = productService.findById(productId);
 
-        Product appropriateProductFromDB = appropriateProductFromDBOpt.orElse(null);
+        Product savedProduct;
 
         if (appropriateProductFromDBOpt.isPresent()) {
-            appropriateProductFromDB.setUrlForValidating(product.getUrlForValidating());
-            appropriateProductFromDB.setCssQueryForValidating(product.getCssQueryForValidating());
-        }
-
-        try {
+            savedProduct = productService.updateValidationCredentials(productId, urlForValidation, cssQueryForValidating, keyId, productApiId);
+            try {
 
 
-            productValidator.validateOne(productService.save(appropriateProductFromDB));
-        } catch (ImpossibleEntitySaveUpdateException | InterruptedException e) {
-            logger.warn(e);
+                productValidator.validateOne(savedProduct);
+            } catch (ImpossibleEntitySaveUpdateException | InterruptedException e) {
+                logger.warn(e);
+            }
         }
 
         return "redirect:/products";

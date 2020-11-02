@@ -68,6 +68,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product updateValidationCredentials(Integer productId, String urlForValidation, String cssQueryForValidating, Integer[] keyId, Integer[] productApiId) {
+
+
+        return null;
+
+    }
+
+    @Override
     public List<Product> findProductByNonFullProductNameRegardlessOfTheWordsOrder(String nonFullProductName) {
         String[] searchingWords = nonFullProductName.split("\\s");
 

@@ -10,8 +10,9 @@ body {
 
 }
 
-#fields{
-    width: auto;
+
+#fields {
+    width: 100%;
 }
 
 .orderLinesFooter {
@@ -23,7 +24,7 @@ body {
 /*width: 100%;*/
 /*left: 0;*/
 /*}*/
-.orderLinesFooterTextLine{
+.orderLinesFooterTextLine {
     text-decoration: underline;
 }
 
@@ -42,7 +43,7 @@ body {
     font-size: 20px;
 }
 
-.carousel-item img{
+.carousel-item img {
     width: auto;
     height: 500px;
 }
@@ -90,12 +91,12 @@ body {
 /*border-color: #ebebeb;*/
 /*}*/
 
-.selected-list-item{
-background: #c9cccf;
-cursor: pointer;
-border-radius:3px;
--moz-border-radius:3px;
--webkit-border-radius:3px;
+.selected-list-item {
+    background: #c9cccf;
+    cursor: pointer;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
 }
 
 

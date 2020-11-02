@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface ProductService {
 
-    Product save(Product product )throws ImpossibleEntitySaveUpdateException;
+    Product save(Product product) throws ImpossibleEntitySaveUpdateException;
 
     List<Product> save(List<Product> productList);
 
@@ -22,6 +22,13 @@ public interface ProductService {
     Optional<Product> findById(int id);
 
     Optional<Product> findProductByName(String name);
+
+
+    Product updateValidationCredentials(Integer productId,
+                                        String urlForValidation,
+                                        String cssQueryForValidating,
+                                        Integer[] keyId,
+                                        Integer[] productApiId);
 
     List<Product> findProductByNonFullProductNameRegardlessOfTheWordsOrder(String nonFullProductName);
 
@@ -33,27 +40,27 @@ public interface ProductService {
                                                                        Pageable pageable);
 
     Page<Product> findProductsByValidationStatusWithPagination(boolean validationStatus,
-                                                                     Pageable pageable);
+                                                               Pageable pageable);
 
     Page<Product> findProductsByGroupWithPagination(Group group,
                                                     Pageable pageable);
 
     Page<Product> findProductsByGroupAndValidationStatusWithPagination(Group group,
-                                                                             boolean validationStatus,
-                                                                             Pageable pageable);
+                                                                       boolean validationStatus,
+                                                                       Pageable pageable);
 
     Page<Product> findProductsByNameIgnoreCaseContainingAndGroupWithPagination(String nonFullName,
                                                                                Group group,
                                                                                Pageable pageable);
 
     Page<Product> findProductsByNameIgnoreCaseContainingAndValidationStatusWithPagination(String nonFullName,
-                                                                                                boolean validationStatus,
-                                                                                                Pageable pageable);
+                                                                                          boolean validationStatus,
+                                                                                          Pageable pageable);
 
     Page<Product> findProductsByNameIgnoreCaseContainingAndGroupAndValidationStatusWithPagination(String nonFullName,
-                                                                                                        Group group,
-                                                                                                        boolean validationStatus,
-                                                                                                        Pageable pageable);
+                                                                                                  Group group,
+                                                                                                  boolean validationStatus,
+                                                                                                  Pageable pageable);
 
     public Page<Product> findProductsWithPagination(String nonFullProductName,
                                                     Group group,
