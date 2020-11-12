@@ -1,6 +1,6 @@
 $(function () {
     $(document).on('click', '#checkValid', function (ev) {
-        var urlField = $('#urlForValidating');
+        var urlField = $('#urlForValidation');
         var cssQueryField = $('#cssQueryForValidating');
         var validPriceField = $('#validPrice');
         var validPriceFieldH = $('#validPriceH');
