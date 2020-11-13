@@ -111,6 +111,10 @@ public class ProductServiceImpl implements ProductService {
 
             product.getModelIdApiKeyLines().addAll(modelIdApiKeyLinesPers);
 
+            product.setUrlForValidating(urlForValidation);
+
+            product.setCssQueryForValidating(cssQueryForValidating);
+
             return productDao.save(product);
 
         }
