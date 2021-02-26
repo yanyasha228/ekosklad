@@ -27,24 +27,27 @@ public class ProductValidator {
 
     private static Logger logger = LoggerFactory.getLogger(ProductValidator.class);
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    private ProductRestService productRestService;
+    private final ProductRestService productRestService;
 
-    @Autowired
-    private DbRestSynchronizer dbRestSynchronizer;
+    private final DbRestSynchronizer dbRestSynchronizer;
 
 
-    @Autowired
-    private CssQueryParser cssQueryParser;
+    private final CssQueryParser cssQueryParser;
 
-    @Autowired
-    private ProductValidatorUtils priceValidatorUtils;
+    private final ProductValidatorUtils priceValidatorUtils;
+
+    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, CssQueryParser cssQueryParser, ProductValidatorUtils priceValidatorUtils) {
+        this.productService = productService;
+        this.productRestService = productRestService;
+        this.dbRestSynchronizer = dbRestSynchronizer;
+        this.cssQueryParser = cssQueryParser;
+        this.priceValidatorUtils = priceValidatorUtils;
+    }
 
 
-    @Scheduled(fixedDelay = 12000000)
+    //    @Scheduled(fixedDelay = 12000000)
     public void validateProducts() throws InterruptedException {
 
         List<Product> syncProductList = dbRestSynchronizer.synchronizeDbProductsWithRestApiModels();

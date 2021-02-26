@@ -14,8 +14,11 @@ import java.util.Optional;
 @Service
 public class ModelIdApiKeyLineServiceImpl implements ModelIdApiKeyLineService {
 
-    @Autowired
-    private ModelIdApiKeyLineDao modelIdApiKeyLineDao;
+    private final ModelIdApiKeyLineDao modelIdApiKeyLineDao;
+
+    public ModelIdApiKeyLineServiceImpl(ModelIdApiKeyLineDao modelIdApiKeyLineDao) {
+        this.modelIdApiKeyLineDao = modelIdApiKeyLineDao;
+    }
 
     @Override
     public Optional<ModelIdApiKeyLine> findById(Integer id) {

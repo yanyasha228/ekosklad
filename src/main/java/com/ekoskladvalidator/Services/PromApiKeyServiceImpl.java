@@ -13,8 +13,11 @@ import java.util.Optional;
 @Service
 public class PromApiKeyServiceImpl implements PromApiKeyService {
 
-    @Autowired
-    private PromApiKeyDao promApiKeyDao;
+    private final PromApiKeyDao promApiKeyDao;
+
+    public PromApiKeyServiceImpl(PromApiKeyDao promApiKeyDao) {
+        this.promApiKeyDao = promApiKeyDao;
+    }
 
     @Override
     public Optional<PromApiKey> findById(Integer id) {

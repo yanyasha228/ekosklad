@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("settings")
 public class SettingsController {
 
-    @Autowired
-    private PromApiKeyService promApiKeyService;
+    private final PromApiKeyService promApiKeyService;
+
+    public SettingsController(PromApiKeyService promApiKeyService) {
+        this.promApiKeyService = promApiKeyService;
+    }
 
     @RequestMapping
     public String settings(Model model) {

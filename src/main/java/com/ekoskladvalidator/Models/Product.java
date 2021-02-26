@@ -1,6 +1,7 @@
 package com.ekoskladvalidator.Models;
 
 
+import com.ekoskladvalidator.Models.Enums.Presence;
 import com.ekoskladvalidator.Models.Enums.Status;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,9 @@ public class Product implements Serializable {
 
     @Column
     private String currency;
+
+    @Column(name = "presence")
+    private Presence presence;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "product",  orphanRemoval = true)

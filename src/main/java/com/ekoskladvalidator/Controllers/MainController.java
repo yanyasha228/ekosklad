@@ -17,19 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class MainController {
 
-    @Autowired
-    private RefactProductModelUtils refactProductModelUtils;
-    @Autowired
-    private ProductValidator productValidator;
+    private final ProductValidator productValidator;
 
-    @Autowired
-    private ProductRestService productRestService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ProductMapper productMapper;
+    public MainController(ProductValidator productValidator) {
+        this.productValidator = productValidator;
+    }
 
     @RequestMapping
     public String mainPage(Model model) {

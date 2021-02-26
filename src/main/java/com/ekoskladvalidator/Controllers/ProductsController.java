@@ -24,14 +24,17 @@ public class ProductsController {
 
     private static final Logger logger = Logger.getLogger(ProductsController.class);
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    private GroupService groupService;
+    private final GroupService groupService;
 
-    @Autowired
-    private PromApiKeyService promApiKeyService;
+    private final PromApiKeyService promApiKeyService;
+
+    public ProductsController(ProductService productService, GroupService groupService, PromApiKeyService promApiKeyService) {
+        this.productService = productService;
+        this.groupService = groupService;
+        this.promApiKeyService = promApiKeyService;
+    }
 
     @GetMapping
     public String productsList(Model model,

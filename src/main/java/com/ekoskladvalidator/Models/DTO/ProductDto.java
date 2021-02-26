@@ -1,5 +1,6 @@
 package com.ekoskladvalidator.Models.DTO;
 
+import com.ekoskladvalidator.Models.Enums.Presence;
 import com.ekoskladvalidator.Models.Enums.Status;
 import com.ekoskladvalidator.Models.Group;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,6 +23,9 @@ public class ProductDto implements Serializable {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String external_id;
+
+
+    private Presence presence;
 
     //    @JsonIgnore
 //    private String apiToken;

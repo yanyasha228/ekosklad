@@ -17,11 +17,14 @@ public class DbRestSynchronizer {
 
     private static final Logger logger = Logger.getLogger(DbRestSynchronizer.class);
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    private ProductRestService productRestService;
+    private final ProductRestService productRestService;
+
+    public DbRestSynchronizer(ProductService productService, ProductRestService productRestService) {
+        this.productService = productService;
+        this.productRestService = productRestService;
+    }
 
 
     public List<Product> synchronizeDbProductsWithRestApiModels() {

@@ -26,14 +26,17 @@ public class ProductServiceImpl implements ProductService {
 
     private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
-    @Autowired
-    private ProductDao productDao;
+    private final ProductDao productDao;
 
-    @Autowired
-    private PromApiKeyDao promApiKeyDao;
+    private final PromApiKeyDao promApiKeyDao;
 
-    @Autowired
-    private ModelIdApiKeyLineDao modelIdApiKeyLineDao;
+    private final ModelIdApiKeyLineDao modelIdApiKeyLineDao;
+
+    public ProductServiceImpl(ProductDao productDao, PromApiKeyDao promApiKeyDao, ModelIdApiKeyLineDao modelIdApiKeyLineDao) {
+        this.productDao = productDao;
+        this.promApiKeyDao = promApiKeyDao;
+        this.modelIdApiKeyLineDao = modelIdApiKeyLineDao;
+    }
 
     @Override
     public Product save(Product product) throws ImpossibleEntitySaveUpdateException {

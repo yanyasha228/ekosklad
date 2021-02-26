@@ -19,14 +19,17 @@ public class ProductsEditController {
 
     private static final Logger logger = Logger.getLogger(ProductsEditController.class);
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    private ProductValidator productValidator;
+    private final ProductValidator productValidator;
 
-    @Autowired
-    private PromApiKeyService promApiKeyService;
+    private final PromApiKeyService promApiKeyService;
+
+    public ProductsEditController(ProductService productService, ProductValidator productValidator, PromApiKeyService promApiKeyService) {
+        this.productService = productService;
+        this.productValidator = productValidator;
+        this.promApiKeyService = promApiKeyService;
+    }
 
     @GetMapping
     public String editProduct(Model model, @PathVariable Integer id) {

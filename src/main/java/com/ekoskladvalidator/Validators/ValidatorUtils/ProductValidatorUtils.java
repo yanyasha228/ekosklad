@@ -11,11 +11,13 @@ import java.util.Optional;
 @Component
 public class ProductValidatorUtils {
 
+    private final CssQueryParser cssQueryParser;
 
-    @Autowired
-    private CssQueryParser cssQueryParser;
+    public ProductValidatorUtils(CssQueryParser cssQueryParser) {
+        this.cssQueryParser = cssQueryParser;
+    }
 
-    public boolean checkIfCssQueryForPriceIsValid(String url, String cssQuery){
+    public boolean checkIfCssQueryForPriceIsValid(String url, String cssQuery) {
 
         String strToVal = null;
         try {
@@ -34,7 +36,7 @@ public class ProductValidatorUtils {
 
     }
 
-    public Optional<Float> getValidPriceByCssQuery(String url, String cssQuery){
+    public Optional<Float> getValidPriceByCssQuery(String url, String cssQuery) {
 
 
         String strToVal = null;
@@ -54,6 +56,20 @@ public class ProductValidatorUtils {
             return Optional.empty();
         }
 
+
+    }
+
+    public Optional<String> getAvailabilityText(String url, String cssQuery) {
+
+        String strToVal = null;
+        try {
+            strToVal = removeTrashCharsFromPriceString(cssQueryParser.
+                    getText(url, cssQuery));
+            return Optional.ofNullable(strToVal);
+
+        } catch (IOException e) {
+            return Optional.empty();
+        }
 
     }
 

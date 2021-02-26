@@ -17,8 +17,11 @@ public class GroupServiceImpl implements GroupService {
 
     private static final Logger log = LoggerFactory.getLogger(GroupServiceImpl.class);
 
-    @Autowired
-    private GroupDao groupDao;
+    private final GroupDao groupDao;
+
+    public GroupServiceImpl(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
 
     @Override
     public Group save(Group group) throws ImpossibleEntitySaveUpdateException {

@@ -21,20 +21,23 @@ import java.util.Optional;
 @Component
 public class RefactProductModelUtils {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
-    @Autowired
-    private PromApiKeyService promApiKeyService;
+    private final PromApiKeyService promApiKeyService;
 
-    @Autowired
-    private ModelIdApiKeyLineService modelIdApiKeyLineService;
+    private final ModelIdApiKeyLineService modelIdApiKeyLineService;
 
-    @Autowired
-    private ProductRestDao productRestDao;
+    private final ProductRestDao productRestDao;
 
-    @Autowired
-    private ProductRestService productRestService;
+    private final ProductRestService productRestService;
+
+    public RefactProductModelUtils(ProductService productService, PromApiKeyService promApiKeyService, ModelIdApiKeyLineService modelIdApiKeyLineService, ProductRestDao productRestDao, ProductRestService productRestService) {
+        this.productService = productService;
+        this.promApiKeyService = promApiKeyService;
+        this.modelIdApiKeyLineService = modelIdApiKeyLineService;
+        this.productRestDao = productRestDao;
+        this.productRestService = productRestService;
+    }
 
     @Transactional
     public void setEkoskladApiKey() throws ImpossibleEntitySaveUpdateException {
