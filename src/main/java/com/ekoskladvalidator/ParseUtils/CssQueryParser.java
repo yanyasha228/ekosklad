@@ -1,6 +1,5 @@
 package com.ekoskladvalidator.ParseUtils;
 
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
