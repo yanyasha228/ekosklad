@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Управление поставщиками</title>
+    <div th:replace="allPagesTemplates :: all_pages_head_data"></div>
+    <link rel="stylesheet" th:href="@{/csssource/item_list_stylesheet.css}">
+    <script th:src="@{/jssource/utils.js}"></script>
+    <script th:src="@{/jssource/supp_res.js}"></script>
+
+</head>
+<body>
+<div th:replace="allPagesTemplates :: navBar"></div>
+
+<style>
+    td {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+<div class="row">
+
+    <div class="col-sm-2">
+        <div th:replace="settingsFragments :: settings_option_list"></div>
+    </div>
+
+    <div class="col-sm-10">
+
+        <div class="table-wrapper" style="margin: 0px 10px;">
+
+            <div class="table-title">
+
+                <div class="row">
+
+                    <div class="col-sm-4">
+
+                        <h2>Управление ресурсами поставщиков</h2>
+
+                    </div>
+
+                    <div class="col-sm-8">
+                        <a title="Добавить магазин"
+                           data-toggle="modal"
+                           data-target="#addResourceModal" class="btn btn-primary"><i
+                                class="material-icons">&#xe147;</i>
+                            <span>Добавить поставщика</span>
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="table-filter">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="show-entries">
+                            <span>Кол-во</span>
+                            <select id="selectPageSize" class="form-control" onchange="location = this.value;">
+                                <option th:value="@{/settings/supp_res(size=5)}"
+                                        th:selected="${resPage.getSize() == 5}">5
+                                </option>
+                                <option th:value="@{/settings/supp_res(size=15)}"
+                                        th:selected="${resPage.getSize() == 15}">15
+                                </option>
+
+                                <option th:value="@{/settings/supp_res(size=50)}"
+                                        th:selected="${resPage.getSize() == 50}">50
+                                </option>
+                                <option th:value="@{/settings/supp_res(size=100)}"
+                                        th:selected="${resPage.getSize() == 100}">100
+                                </option>
+                            </select>
+                            <span>страниц</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover" id="orderListTable">
+
+                <thead>
+                <tr>
+
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Хост</th>
+                    <th>Редактировать</th>
+                    <th>Удалить</th>
+
+                </tr>
+                </thead>
+
+                <tbody th:each="res : ${resPage}">
+
+                <tr>
+
+                    <td th:text="${res.getId()}"></td>
+
+                    <td style="" th:text="${res.getName()}"></td>
+
+                    <td th:text="${res.getHostUrl()}"></td>
+
+                    <td>
+                        <a th:href="@{/settings/supp_res/{id}/edit(id=${res.getId()})}" class="view"
+                           title="Редактировать">
+                            <i class="material-icons">&#xE5C8;</i></a>
+                    </td>
+
+                    <td>
+                        <a href="#" class="delete"
+                           title="Удалить"
+                           data-toggle="modal"
+                           data-target="#deleteResourceModal"
+                           th:data-res-id="${res.getId()}"
+                           th:data-res-name="${res.getName()}">
+                            <i class="material-icons">&#xe5cd;</i></a>
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="clearfix">
+
+                <div class="hint-text">Всего позиций по поисковому запросу: <b
+                        th:text="${resPage.getTotalElements()}"></b>
+                </div>
+
+
+                <ul class="pagination">
+                    <li class="page-item"><a
+                            th:href="@{/settings/keys(size=${resPage.getSize()})}"
+                            class="page-link"> << </a></li>
+                    <li class="page-item"><a
+                            th:href="@{/settings/keys(page = ${resPage.getNumber()-1},
+                    size=${resPage.getSize()})}"
+                            th:if="${resPage.getNumber() > 0}"
+                            class="page-link"> < </a></li>
+                    <li class="page-item active"><a class="page-link"
+                                                    th:text="${resPage.getNumber()}"></a></li>
+                    <li class="page-item"><a
+                            th:href="@{/settings/keys(page = ${resPage.getNumber()+1},
+                    size=${resPage.getSize()})}"
+                            th:if="${(resPage.getNumber() + 1) < resPage.getTotalPages()}"
+                            class="page-link"> > </a></li>
+
+                    <li class="page-item"><a
+                            th:href="@{/settings/keys(page = ${resPage.getTotalPages()-1},
+                    size=${resPage.getSize()})}"
+                            class="page-link"> >> </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addResourceModal" tabindex="-1" role="dialog" aria-labelledby="addResourceModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addResourceModalLabel">Добавить ключ : </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="controls">
+
+                    <label for="inputResourceName">Название : </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> </span>
+                        </div>
+                        <input type="text" class="form-control" id="inputResourceName"
+                               aria-describedby="inputGroup-sizing-sm">
+                    </div>
+
+                    <label for="inputResourceLink">Любая сылка с ресурса : </label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> </span>
+                        </div>
+                        <input type="text" class="form-control" id="inputResourceLink"
+                               aria-describedby="inputGroup-sizing-sm">
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button" id="addResourceLink" class="btn btn-secondary">Добавить</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteResourceModal" tabindex="-1" role="dialog" aria-labelledby="deleteResourceModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteResourceModalLabel">Удаление ключа</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteResourceModalNameLabel"></h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <h3><b>Удалить ключ?</b></h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" id="deleteResourceButton" class="btn btn-primary">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

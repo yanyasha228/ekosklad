@@ -21,4 +21,5 @@ public interface SupplierResourceService {
 
     SupplierResource create(CreateSupplierResource createSupplierResource) throws MalformedURLException;
 
+    void delete(Integer id);
 }

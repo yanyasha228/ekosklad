@@ -36,8 +36,11 @@ public class ProductRestDaoImpl implements ProductRestDao {
     @Value("${rest.prom.api.get.products.external_id}")
     private String getProductByExternalIdUri;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+
+    public ProductRestDaoImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public Optional<ProductDto> getProductById(int id) {

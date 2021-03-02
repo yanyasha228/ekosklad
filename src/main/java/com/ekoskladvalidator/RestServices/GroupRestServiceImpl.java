@@ -12,11 +12,14 @@ import java.util.stream.Collectors;
 @Service
 public class GroupRestServiceImpl implements GroupRestService {
 
-    @Autowired
-    private GroupRestDao groupRestDao;
+    private final GroupRestDao groupRestDao;
 
-    @Autowired
-    private GroupMapper groupMapper;
+    private final GroupMapper groupMapper;
+
+    public GroupRestServiceImpl(GroupRestDao groupRestDao, GroupMapper groupMapper) {
+        this.groupRestDao = groupRestDao;
+        this.groupMapper = groupMapper;
+    }
 
     @Override
     public List<Group> getAll() {

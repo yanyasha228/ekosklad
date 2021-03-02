@@ -4,6 +4,8 @@
     <div class="list-group" id="settings-slide-bar">
         <link rel="stylesheet" th:href="@{/csssource/settings_pages.css}" >
         <a href="/settings/keys" th:classappend="${#httpServletRequest.requestURI.contains('keys')} ? active : ''" class="list-group-item list-group-item-action">Ключи</a>
+        <a href="/settings/supp_res" th:classappend="${#httpServletRequest.requestURI.contains('supp_res')} ? active : ''" class="list-group-item list-group-item-action">Поставщики</a>
     </div>
+
 </div>
 </html>

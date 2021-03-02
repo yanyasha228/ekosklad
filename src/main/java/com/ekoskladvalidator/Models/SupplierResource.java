@@ -20,7 +20,10 @@ public class SupplierResource {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "source_url" , unique = true)
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "source_url", unique = true)
     private String hostUrl;
 
     @LazyCollection(LazyCollectionOption.FALSE)

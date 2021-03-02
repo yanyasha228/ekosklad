@@ -18,20 +18,17 @@ import java.util.stream.Collectors;
 @Service
 public class ProductRestServiceImpl implements ProductRestService {
 
-    @Autowired
-    private GroupRestDao groupRestDao;
+    private final ProductRestDao productRestDao;
 
-    @Autowired
-    private GroupService groupService;
+    private final ProductService productService;
 
-    @Autowired
-    private ProductRestDao productRestDao;
+    private final ProductMapper productMapper;
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ProductMapper productMapper;
+    public ProductRestServiceImpl(ProductRestDao productRestDao, ProductService productService, ProductMapper productMapper) {
+        this.productRestDao = productRestDao;
+        this.productService = productService;
+        this.productMapper = productMapper;
+    }
 
     @Override
     public Optional<Product> getProductById(int id) {

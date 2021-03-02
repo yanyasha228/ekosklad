@@ -11,13 +11,16 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateSupplierResource {
 
-    public CreateSupplierResource(String someUrlFromSource, List<PresenceMatcher> presenceMatchers) {
+    public CreateSupplierResource(String name , String someUrlFromSource, List<PresenceMatcher> presenceMatchers) {
         this.someUrlFromSource = someUrlFromSource;
         this.presenceMatchers = presenceMatchers;
     }
 
     @NonNull
     private String someUrlFromSource;
+
+    @NonNull
+    private String name;
 
     @NonNull
     private List<PresenceMatcher> presenceMatchers;

@@ -51,10 +51,16 @@ public class SupplierResourceServiceImpl implements SupplierResourceService {
 
         SupplierResource supplierResource = new SupplierResource();
 
+        supplierResource.setName(createSupplierResource.getName());
         supplierResource.setHostUrl(new URL(createSupplierResource.getSomeUrlFromSource()).getHost());
 
         supplierResource.setPresenceMatchers(createSupplierResource.getPresenceMatchers());
 
         return supplierResourceDao.save(supplierResource);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        supplierResourceDao.deleteById(id);
     }
 }

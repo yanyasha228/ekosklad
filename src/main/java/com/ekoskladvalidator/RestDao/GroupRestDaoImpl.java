@@ -21,9 +21,11 @@ public class GroupRestDaoImpl implements GroupRestDao {
     @Value("${rest.prom.api.get.groups.list}")
     private String getGroupsListUrl;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
+    public GroupRestDaoImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
 
     @Autowired

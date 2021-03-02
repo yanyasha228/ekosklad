@@ -10,10 +10,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/keys")
-public class ShopsRestController {
+public class KeysRestController {
 
-    @Autowired
-    private PromApiKeyService promApiKeyService;
+    private final PromApiKeyService promApiKeyService;
+
+    public KeysRestController(PromApiKeyService promApiKeyService) {
+        this.promApiKeyService = promApiKeyService;
+    }
 
     @GetMapping("{id}")
     public PromApiKey getKey(@PathVariable Integer id) {
