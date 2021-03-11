@@ -1,17 +1,20 @@
 package com.ekoskladvalidator.Controllers;
 
+import com.ekoskladvalidator.Models.Enums.Presence;
+import com.ekoskladvalidator.Models.HelpServiceManipulationModels.EditSupplierResource;
+import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.SupplierResource;
 import com.ekoskladvalidator.Services.SupplierResourceService;
-import org.dom4j.rule.Mode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/settings/supp_res")
@@ -38,5 +41,30 @@ public class SupplierResourcesController {
 
         return "supplierResourcesSettingsEdit";
     }
+
+    @PostMapping("{id}/edit/submit")
+    public String resEditSubmit(@PathVariable Optional<Integer> id,
+                                @RequestParam Integer[] presenceMatcherId,
+                                @RequestParam Presence[] status,
+                                @RequestParam String[] xPathInput,
+                                @RequestParam String[] inputContainsString) throws Exception {
+        if (!((presenceMatcherId.length == status.length)
+                && (presenceMatcherId.length == xPathInput.length)
+                && (presenceMatcherId.length == inputContainsString.length)))
+            throw new Exception("Не совпадают масивы правил проверки");
+
+        Set<PresenceMatcher> presenceSet = new HashSet<>();
+
+        for (int pres = 0; pres < presenceMatcherId.length; pres++) {
+            presenceSet.add(new PresenceMatcher(presenceMatcherId[pres], status[pres], xPathInput[pres], inputContainsString[pres]));
+        }
+        if (presenceSet.size() != 0) {
+            EditSupplierResource editSupplierResource = new EditSupplierResource(id.orElseThrow(() -> new Exception("No Supplier Id")), presenceSet);
+            supplierResourceService.edit(editSupplierResource);
+        }
+
+        return "redirect:/settings/supp_res";
+    }
+
 
 }

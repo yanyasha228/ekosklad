@@ -1,6 +1,7 @@
 package com.ekoskladvalidator.Services;
 
 import com.ekoskladvalidator.Models.HelpServiceManipulationModels.CreateSupplierResource;
+import com.ekoskladvalidator.Models.HelpServiceManipulationModels.EditSupplierResource;
 import com.ekoskladvalidator.Models.SupplierResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,8 @@ public interface SupplierResourceService {
     Optional<SupplierResource> findByHostUrl(String hostUrl);
 
     SupplierResource create(CreateSupplierResource createSupplierResource) throws MalformedURLException;
+
+    SupplierResource edit(EditSupplierResource editSupplierResource) throws Exception;
 
     void delete(Integer id);
 }

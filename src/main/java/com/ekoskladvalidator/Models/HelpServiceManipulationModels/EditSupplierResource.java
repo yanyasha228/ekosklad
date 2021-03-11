@@ -3,25 +3,22 @@ package com.ekoskladvalidator.Models.HelpServiceManipulationModels;
 import com.ekoskladvalidator.Models.PresenceMatcher;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
+import lombok.NonNull;
 
-import java.util.List;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class CreateSupplierResource {
+public class EditSupplierResource {
 
-    public CreateSupplierResource(String name , String someUrlFromSource, Set<PresenceMatcher> presenceMatchers) {
-        this.someUrlFromSource = someUrlFromSource;
+    public EditSupplierResource(@NonNull Integer id,
+                                @NonNull Set<PresenceMatcher> presenceMatchers) {
+        this.id = id;
         this.presenceMatchers = presenceMatchers;
     }
 
     @NonNull
-    private String someUrlFromSource;
-
-    @NonNull
-    private String name;
+    private Integer id;
 
     @NonNull
     private Set<PresenceMatcher> presenceMatchers;

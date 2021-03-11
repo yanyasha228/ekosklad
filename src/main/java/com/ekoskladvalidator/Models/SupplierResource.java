@@ -7,8 +7,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class SupplierResource {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
     @Column(name = "name")
     private String name;
@@ -29,7 +29,7 @@ public class SupplierResource {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "presence_matcher_id")
-    private List<PresenceMatcher> presenceMatchers = new ArrayList<>();
+    private Set<PresenceMatcher> presenceMatchers = new HashSet<>();
 
 
 }
