@@ -3,7 +3,7 @@ package com.ekoskladvalidator.Validators;
 
 import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
 import com.ekoskladvalidator.Models.Product;
-import com.ekoskladvalidator.ParseUtils.CssQueryParser;
+import com.ekoskladvalidator.ParseUtils.CssQueryParserImpl;
 import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.SyncUtils.DbRestSynchronizer;
@@ -11,8 +11,6 @@ import com.ekoskladvalidator.Validators.ValidatorUtils.ProductValidatorUtils;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -34,11 +32,11 @@ public class ProductValidator {
     private final DbRestSynchronizer dbRestSynchronizer;
 
 
-    private final CssQueryParser cssQueryParser;
+    private final CssQueryParserImpl cssQueryParser;
 
     private final ProductValidatorUtils priceValidatorUtils;
 
-    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, CssQueryParser cssQueryParser, ProductValidatorUtils priceValidatorUtils) {
+    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, CssQueryParserImpl cssQueryParser, ProductValidatorUtils priceValidatorUtils) {
         this.productService = productService;
         this.productRestService = productRestService;
         this.dbRestSynchronizer = dbRestSynchronizer;

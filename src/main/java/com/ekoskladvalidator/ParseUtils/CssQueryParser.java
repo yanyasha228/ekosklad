@@ -1,41 +1,23 @@
 package com.ekoskladvalidator.ParseUtils;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.charset.MalformedInputException;
+import java.util.List;
+import java.util.Optional;
 
-@Component
-public class CssQueryParser {
+public interface CssQueryParser {
 
-    private static final Logger log = LoggerFactory.getLogger(CssQueryParser.class);
+    Optional<String> getFirstElementValue(String url, String cssQuery) throws IOException;
 
-    public CssQueryParser() {
-    }
+    Elements getElements(String url , String cssQuery) throws IOException;
 
-    public String getText(String url, String cssQuery) throws IOException {
+    Optional<Document> getDocument(String url) throws IOException;
 
-        Document doc;
+    Optional<String> getFirstElementValue(Document document, String cssQuery) throws IOException;
 
-        try {
-            doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true).get();
-        } catch (MalformedInputException e) {
-            return "null";
-        }
+    List<String> getElementsValues(String url, String cssQuery) throws IOException;
 
-        Elements ells = doc.select(cssQuery);
-        Element ell = ells.first();
-
-        if (ell != null) return ell.text();
-
-        return "null";
-    }
-
+    String getText(String url, String cssQuery) throws IOException;
 }
-
