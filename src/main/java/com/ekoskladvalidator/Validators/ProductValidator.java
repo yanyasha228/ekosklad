@@ -2,21 +2,26 @@ package com.ekoskladvalidator.Validators;
 
 
 import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
+import com.ekoskladvalidator.Models.Enums.Presence;
+import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.Product;
+import com.ekoskladvalidator.Models.SupplierResource;
 import com.ekoskladvalidator.ParseUtils.CssQueryParserImpl;
 import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ProductService;
+import com.ekoskladvalidator.Services.SupplierResourceService;
 import com.ekoskladvalidator.SyncUtils.DbRestSynchronizer;
 import com.ekoskladvalidator.Validators.ValidatorUtils.ProductValidatorUtils;
 import lombok.Data;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -31,17 +36,20 @@ public class ProductValidator {
 
     private final DbRestSynchronizer dbRestSynchronizer;
 
-
     private final CssQueryParserImpl cssQueryParser;
 
     private final ProductValidatorUtils priceValidatorUtils;
 
-    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, CssQueryParserImpl cssQueryParser, ProductValidatorUtils priceValidatorUtils) {
+    private final SupplierResourceService supplierResourceService;
+
+
+    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, CssQueryParserImpl cssQueryParser, ProductValidatorUtils priceValidatorUtils, SupplierResourceService supplierResourceService) {
         this.productService = productService;
         this.productRestService = productRestService;
         this.dbRestSynchronizer = dbRestSynchronizer;
         this.cssQueryParser = cssQueryParser;
         this.priceValidatorUtils = priceValidatorUtils;
+        this.supplierResourceService = supplierResourceService;
     }
 
 
@@ -96,8 +104,14 @@ public class ProductValidator {
                 prFV.updateLastValidationDate();
             } else prFV.setValidationStatus(false);
 
-        }
+            try {
+                prFV.setPresence(getPresence(prFV));
+            } catch (Exception e) {
+                logger.trace(ExceptionUtils.getStackTrace(e));
+                e.printStackTrace();
+            }
 
+        }
 
         List<Product> productsThatHadntBeenValidatedAfterSaving = productService.save(productListForExSave);
 
@@ -105,16 +119,47 @@ public class ProductValidator {
 
         List<Product> productThatHaveBeenValidated = productRestService.postProducts(productThatShouldBeValidatingAfterSaving);
 
-        logger.error("Products that should not have been validated ammount : " + productListForExSave.size());
-        logger.error("Products that should not have been validated after saving ammount : " + productsThatHadntBeenValidatedAfterSaving.size());
-        logger.error("Products that should have been validated ammount :" + productListForValidation.size());
-        logger.error("Products that should have been validated after saving ammount :" + productThatShouldBeValidatingAfterSaving.size());
-        logger.error("Products that have been validated ammount :" + productThatHaveBeenValidated.size());
-
+        logger.error("Products that should not have been validated amount : " + productListForExSave.size());
+        logger.error("Products that should not have been validated after saving amount : " + productsThatHadntBeenValidatedAfterSaving.size());
+        logger.error("Products that should have been validated amount :" + productListForValidation.size());
+        logger.error("Products that should have been validated after saving amount :" + productThatShouldBeValidatingAfterSaving.size());
+        logger.error("Products that have been validated amount :" + productThatHaveBeenValidated.size());
 
     }
 
-    public List<Product> validateOne(Product product) throws ImpossibleEntitySaveUpdateException, InterruptedException {
+    private Presence getPresence(Product product) throws Exception {
+
+        SupplierResource supplierResource = supplierResourceService.findByHostUrl(new URL(product.getUrlForValidating()).getHost())
+                .orElseThrow(() -> new Exception("No supplierResource for such host: " + product.getUrlForValidating()));
+
+        List<PresenceMatcher> presenceMatchersList = new ArrayList<>();
+
+        Set<PresenceMatcher> presenceMatcherSet = supplierResource.getPresenceMatchers();
+
+        for (PresenceMatcher presenceMatcher : presenceMatcherSet) {
+            Document document = cssQueryParser.getDocument(product.getUrlForValidating())
+                    .orElseThrow(() -> new Exception("Couldn't get document from url : " + product.getUrlForValidating()));
+
+            Optional<String> value = cssQueryParser.getFirstElementValue(document, presenceMatcher.getPresencePathQuery());
+
+            if (value.isPresent()) {
+                if (value.get().contains(presenceMatcher.getContainString()))
+                    presenceMatchersList.add(presenceMatcher);
+            }
+
+        }
+
+        if (presenceMatchersList.size() == 1) {
+            return presenceMatchersList.get(0).getPresence();
+        } else if (presenceMatchersList.size() > 1) {
+            throw new Exception("More then one status matching prodID: " + product.getId());
+        } else throw new Exception("Have no one status matching prodID: " + product.getId());
+
+    }
+
+
+    public List<Product> validateOne(Product product) throws
+            ImpossibleEntitySaveUpdateException, InterruptedException {
 
         Product syncedProduct;
 
