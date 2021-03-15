@@ -7,6 +7,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import us.codecraft.xsoup.Xsoup;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -16,11 +17,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Component
-public class CssQueryParserImpl implements CssQueryParser{
+public class QueryParserImpl implements QueryParser {
 
-    private static final Logger log = LoggerFactory.getLogger(CssQueryParserImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(QueryParserImpl.class);
 
-    public CssQueryParserImpl() {
+    public QueryParserImpl() {
     }
 
     @Override
@@ -72,6 +73,16 @@ public class CssQueryParserImpl implements CssQueryParser{
             if (ell != null) return Optional.ofNullable(ell.text());
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> getStringBuyXpath(Document document, String xPath) throws Exception {
+        if (xPath.contains("text()")) {
+            String str = Xsoup.compile(xPath).evaluate(document).get();
+            return Optional.ofNullable(str);
+        }
+        throw new Exception("Xpath has no text() function");
+
     }
 
     public Optional<String> getFirstElementValue(String url, String cssQuery) throws IOException {

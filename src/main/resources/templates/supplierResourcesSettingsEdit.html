@@ -71,7 +71,7 @@
 
                     <div class="form-group col-md-6" id="inputXPathInputDiv">
                         <label for="inputContainsString">Путь(XPath)</label>
-                        <input class="form-control is-invalid"
+                        <input class="form-control is-valid"
                                id="xPathInput" type="text"
                                name="xPathInput"
                                th:value="${presenceMatcher.getPresencePathQuery()}"/>
@@ -79,10 +79,10 @@
 
                     <div class="form-group col-md-2">
                         <label for="inputContainsString">Содержит</label>
-                        <input class="form-control is-invalid"
+                        <input class="form-control is-valid"
                                name="inputContainsString"
                                th:value="${presenceMatcher.getContainString()}"
-                               id="inputContainsString" type="number"/>
+                               id="inputContainsString" type="text"/>
                     </div>
 
                     <div class="form-group col-md-1">
@@ -125,7 +125,7 @@
                         <label for="inputContainsString">Содержит</label>
                         <input class="form-control is-invalid"
                                name="inputContainsString"
-                               id="inputContainsString" type="number"/>
+                               id="inputContainsString" type="text"/>
                     </div>
 
                     <div class="form-group col-md-1">

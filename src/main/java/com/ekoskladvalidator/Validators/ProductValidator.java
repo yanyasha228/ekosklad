@@ -6,7 +6,7 @@ import com.ekoskladvalidator.Models.Enums.Presence;
 import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Models.SupplierResource;
-import com.ekoskladvalidator.ParseUtils.CssQueryParserImpl;
+import com.ekoskladvalidator.ParseUtils.QueryParserImpl;
 import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.SupplierResourceService;
@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,14 +35,14 @@ public class ProductValidator {
 
     private final DbRestSynchronizer dbRestSynchronizer;
 
-    private final CssQueryParserImpl cssQueryParser;
+    private final QueryParserImpl cssQueryParser;
 
     private final ProductValidatorUtils priceValidatorUtils;
 
     private final SupplierResourceService supplierResourceService;
 
 
-    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, CssQueryParserImpl cssQueryParser, ProductValidatorUtils priceValidatorUtils, SupplierResourceService supplierResourceService) {
+    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, QueryParserImpl cssQueryParser, ProductValidatorUtils priceValidatorUtils, SupplierResourceService supplierResourceService) {
         this.productService = productService;
         this.productRestService = productRestService;
         this.dbRestSynchronizer = dbRestSynchronizer;
@@ -127,7 +126,7 @@ public class ProductValidator {
 
     }
 
-    private Presence getPresence(Product product) throws Exception {
+    public Presence getPresence(Product product) throws Exception {
 
         SupplierResource supplierResource = supplierResourceService.findByHostUrl(new URL(product.getUrlForValidating()).getHost())
                 .orElseThrow(() -> new Exception("No supplierResource for such host: " + product.getUrlForValidating()));
@@ -140,7 +139,7 @@ public class ProductValidator {
             Document document = cssQueryParser.getDocument(product.getUrlForValidating())
                     .orElseThrow(() -> new Exception("Couldn't get document from url : " + product.getUrlForValidating()));
 
-            Optional<String> value = cssQueryParser.getFirstElementValue(document, presenceMatcher.getPresencePathQuery());
+            Optional<String> value = cssQueryParser.getStringBuyXpath(document, presenceMatcher.getPresencePathQuery());
 
             if (value.isPresent()) {
                 if (value.get().contains(presenceMatcher.getContainString()))

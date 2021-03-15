@@ -1,7 +1,7 @@
 package com.ekoskladvalidator.Validators.ValidatorUtils;
 
 
-import com.ekoskladvalidator.ParseUtils.CssQueryParserImpl;
+import com.ekoskladvalidator.ParseUtils.QueryParserImpl;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -10,9 +10,9 @@ import java.util.Optional;
 @Component
 public class ProductValidatorUtils {
 
-    private final CssQueryParserImpl cssQueryParser;
+    private final QueryParserImpl cssQueryParser;
 
-    public ProductValidatorUtils(CssQueryParserImpl cssQueryParser) {
+    public ProductValidatorUtils(QueryParserImpl cssQueryParser) {
         this.cssQueryParser = cssQueryParser;
     }
 
