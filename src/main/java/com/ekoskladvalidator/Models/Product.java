@@ -36,10 +36,11 @@ public class Product implements Serializable {
     private String currency;
 
     @Column(name = "presence")
+    @Enumerated(EnumType.STRING)
     private Presence presence;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "product",  orphanRemoval = true)
+    @OneToMany(mappedBy = "product", orphanRemoval = true)
     List<ModelIdApiKeyLine> modelIdApiKeyLines = new ArrayList<>();
 
     @Column
@@ -77,7 +78,6 @@ public class Product implements Serializable {
         modifyDataForValidationFlag();
 
     }
-
 
     private void modifyDataForValidationFlag() {
 

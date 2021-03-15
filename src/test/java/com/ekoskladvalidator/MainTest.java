@@ -2,12 +2,11 @@ package com.ekoskladvalidator;
 
 import com.ekoskladvalidator.Models.Enums.Presence;
 import com.ekoskladvalidator.Models.Product;
-import com.ekoskladvalidator.ParseUtils.QueryParser;
+import com.ekoskladvalidator.ParseUtils.DocQueryParser;
 import com.ekoskladvalidator.RestDao.ProductRestDao;
 import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Validators.ProductValidator;
-import org.jsoup.nodes.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class MainTest {
     private ProductValidator productValidator;
 
     @Autowired
-    private QueryParser queryParser;
+    private DocQueryParser docQueryParser;
 
     @Autowired
     private ProductRestDao productRestDao;
@@ -63,9 +62,9 @@ public class MainTest {
 
         for (Product product : products
         ) {
-            Presence presence;
+            Presence presence = null;
             try {
-                presence = productValidator.getPresence(product);
+//                presence = productValidator.getPresence(product);
             } catch (Exception e) {
                 presence = Presence.not_available;
             }

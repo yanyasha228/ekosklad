@@ -1,7 +1,8 @@
 package com.ekoskladvalidator.Validators.ValidatorUtils;
 
 
-import com.ekoskladvalidator.ParseUtils.QueryParserImpl;
+import com.ekoskladvalidator.ParseUtils.DocQueryParserImpl;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -10,9 +11,9 @@ import java.util.Optional;
 @Component
 public class ProductValidatorUtils {
 
-    private final QueryParserImpl cssQueryParser;
+    private final DocQueryParserImpl cssQueryParser;
 
-    public ProductValidatorUtils(QueryParserImpl cssQueryParser) {
+    public ProductValidatorUtils(DocQueryParserImpl cssQueryParser) {
         this.cssQueryParser = cssQueryParser;
     }
 
@@ -42,6 +43,30 @@ public class ProductValidatorUtils {
         try {
             strToVal = removeTrashCharsFromPriceString(cssQueryParser.
                     getText(url, cssQuery));
+
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Float.parseFloat(strToVal));
+
+        } catch (NumberFormatException e) {
+
+            return Optional.empty();
+        }
+
+
+    }
+
+    public Optional<Float> getValidPriceByCssQuery(Document document, String cssQuery) {
+
+
+        String strToVal = null;
+        try {
+            Optional<String> optStr = cssQueryParser.getFirstElementValue(document, cssQuery);
+            if (optStr.isEmpty()) return Optional.empty();
+            strToVal = removeTrashCharsFromPriceString(optStr.get());
 
         } catch (IOException e) {
             return Optional.empty();

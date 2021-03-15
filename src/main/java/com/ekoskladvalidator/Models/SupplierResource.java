@@ -28,7 +28,7 @@ public class SupplierResource {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "presence_matcher_id")
+    @JoinColumn(name = "supplier_resource_id")
     private Set<PresenceMatcher> presenceMatchers = new HashSet<>();
 
 

@@ -1,6 +1,9 @@
 package com.ekoskladvalidator.Controllers;
 
+import com.ekoskladvalidator.Models.Enums.Presence;
 import com.ekoskladvalidator.Models.Product;
+import com.ekoskladvalidator.Models.SpecSearchModels.SearchCriteria;
+import com.ekoskladvalidator.Models.SpecSearchModels.SearchSpecification;
 import com.ekoskladvalidator.Services.GroupService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.PromApiKeyService;
@@ -41,22 +44,28 @@ public class ProductsController {
                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 5) Pageable pageable,
                                @RequestParam Optional<Boolean> validationStatus,
                                @RequestParam Optional<Integer> groupId,
-                               @RequestParam Optional<String> nonFullProductName) {
+                               @RequestParam Optional<String> nonFullProductName,
+                               @RequestParam Optional<Presence> presence) {
 
 
+//        Page<Product> productsPage = productService.findProductsWithPagination(nonFullProductName.orElse(""),
+//                groupService.findById(groupId.orElse(0)).orElse(null),
+//                validationStatus.orElse(null),
+//                pageable);
 
-        Page<Product> productsPage = productService.findProductsWithPagination(nonFullProductName.orElse(""),
-                groupService.findById(groupId.orElse(0)).orElse(null),
-                validationStatus.orElse(null),
-                pageable);
-
-
+        SearchSpecification<Product> nameSpec = new SearchSpecification<>(new SearchCriteria("name", ":", nonFullProductName.orElse(null)));
+        SearchSpecification<Product> groupSpec = new SearchSpecification<>(new SearchCriteria("group", "=", groupService.findById(groupId.orElse(0)).orElse(null)));
+        SearchSpecification<Product> availabilitySpec = new SearchSpecification<>(new SearchCriteria("validationStatus", "=", validationStatus.orElse(null)));
+        SearchSpecification<Product> reasonSpec = new SearchSpecification<>(new SearchCriteria("presence", "=", presence.orElse(null)));
+        Page<Product> productsPage = productService.findAll(nameSpec.and(groupSpec).and(availabilitySpec).and(reasonSpec), pageable);
 
         model.addAttribute("validationStatus", validationStatus.orElse(null));
 
         model.addAttribute("groupId", groupId.orElse(0));
 
         model.addAttribute("nonFullProductName", nonFullProductName.orElse(""));
+
+        model.addAttribute("presence", presence.orElse(null));
 
         model.addAttribute("productsPage",
                 productsPage);

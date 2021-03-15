@@ -1,12 +1,12 @@
 package com.ekoskladvalidator.Validators;
 
 
-import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
+import com.ekoskladvalidator.CustomExceptions.*;
 import com.ekoskladvalidator.Models.Enums.Presence;
 import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Models.SupplierResource;
-import com.ekoskladvalidator.ParseUtils.QueryParserImpl;
+import com.ekoskladvalidator.ParseUtils.DocQueryParser;
 import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.SupplierResourceService;
@@ -17,8 +17,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,24 +38,29 @@ public class ProductValidator {
 
     private final DbRestSynchronizer dbRestSynchronizer;
 
-    private final QueryParserImpl cssQueryParser;
+    private final DocQueryParser docQueryParser;
 
     private final ProductValidatorUtils priceValidatorUtils;
 
     private final SupplierResourceService supplierResourceService;
 
 
-    public ProductValidator(ProductService productService, ProductRestService productRestService, DbRestSynchronizer dbRestSynchronizer, QueryParserImpl cssQueryParser, ProductValidatorUtils priceValidatorUtils, SupplierResourceService supplierResourceService) {
+    public ProductValidator(ProductService productService,
+                            ProductRestService productRestService,
+                            DbRestSynchronizer dbRestSynchronizer,
+                            ProductValidatorUtils priceValidatorUtils,
+                            SupplierResourceService supplierResourceService,
+                            DocQueryParser docQueryParser) {
         this.productService = productService;
         this.productRestService = productRestService;
         this.dbRestSynchronizer = dbRestSynchronizer;
-        this.cssQueryParser = cssQueryParser;
         this.priceValidatorUtils = priceValidatorUtils;
         this.supplierResourceService = supplierResourceService;
+        this.docQueryParser = docQueryParser;
     }
 
 
-    //    @Scheduled(fixedDelay = 12000000)
+    @Scheduled(fixedDelay = 12000000)
     public void validateProducts() throws InterruptedException {
 
         List<Product> syncProductList = dbRestSynchronizer.synchronizeDbProductsWithRestApiModels();
@@ -86,14 +94,24 @@ public class ProductValidator {
                     }
                     return false;
                 }).
-                collect(Collectors.toList()).stream().map(product -> {
-            product.setValidationStatus(false);
-            return product;
-        }).collect(Collectors.toList());
+        collect(Collectors.toList()).stream().map(product -> {
+                    product.setValidationStatus(false);
+                    return product;
+                }).collect(Collectors.toList());
 
         for (Product prFV : productListForValidation) {
             logger.error("Getting valid Price of product id : " + prFV.getId());
-            Optional<Float> newPrice = priceValidatorUtils.getValidPriceByCssQuery(prFV.getUrlForValidating(),
+            Document document;
+
+            try {
+                document = docQueryParser.getDocument(prFV.getUrlForValidating())
+                        .orElseThrow(() -> new NoDocumentException("Couldn't get document from url : " + prFV.getUrlForValidating()));
+            } catch (Exception e) {
+                logger.error(ExceptionUtils.getStackTrace(e));
+                continue;
+            }
+
+            Optional<Float> newPrice = priceValidatorUtils.getValidPriceByCssQuery(document,
                     prFV.getCssQueryForValidating());
 
             if (newPrice.isPresent()) {
@@ -104,10 +122,15 @@ public class ProductValidator {
             } else prFV.setValidationStatus(false);
 
             try {
-                prFV.setPresence(getPresence(prFV));
-            } catch (Exception e) {
-                logger.trace(ExceptionUtils.getStackTrace(e));
-                e.printStackTrace();
+                logger.error("Setting PRESENCE for product : " + prFV.getUrlForValidating());
+                prFV.setPresence(getPresence(document, prFV));
+                logger.error("PRESENCE is : " + prFV.getPresence());
+            } catch (NoSupplierResourceException | MalformedURLException | MoreThenOneMatchingException | NotValidQueryException e) {
+                logger.error(ExceptionUtils.getStackTrace(e));
+            } catch (NoMatchingException e) {
+                logger.error(ExceptionUtils.getStackTrace(e));
+                prFV.setPresence(Presence.not_available);
+                logger.error("PRESENCE is : " + prFV.getPresence());
             }
 
         }
@@ -126,20 +149,21 @@ public class ProductValidator {
 
     }
 
-    public Presence getPresence(Product product) throws Exception {
+    public Presence getPresence(Document document, Product product)
+            throws MalformedURLException,
+            NoSupplierResourceException,
+            NotValidQueryException, MoreThenOneMatchingException, NoMatchingException {
 
         SupplierResource supplierResource = supplierResourceService.findByHostUrl(new URL(product.getUrlForValidating()).getHost())
-                .orElseThrow(() -> new Exception("No supplierResource for such host: " + product.getUrlForValidating()));
+                .orElseThrow(() -> new NoSupplierResourceException("No supplierResource for such host: " + product.getUrlForValidating()));
 
         List<PresenceMatcher> presenceMatchersList = new ArrayList<>();
 
         Set<PresenceMatcher> presenceMatcherSet = supplierResource.getPresenceMatchers();
 
         for (PresenceMatcher presenceMatcher : presenceMatcherSet) {
-            Document document = cssQueryParser.getDocument(product.getUrlForValidating())
-                    .orElseThrow(() -> new Exception("Couldn't get document from url : " + product.getUrlForValidating()));
 
-            Optional<String> value = cssQueryParser.getStringBuyXpath(document, presenceMatcher.getPresencePathQuery());
+            Optional<String> value = docQueryParser.getStringBuyXpath(document, presenceMatcher.getPresencePathQuery());
 
             if (value.isPresent()) {
                 if (value.get().contains(presenceMatcher.getContainString()))
@@ -151,8 +175,8 @@ public class ProductValidator {
         if (presenceMatchersList.size() == 1) {
             return presenceMatchersList.get(0).getPresence();
         } else if (presenceMatchersList.size() > 1) {
-            throw new Exception("More then one status matching prodID: " + product.getId());
-        } else throw new Exception("Have no one status matching prodID: " + product.getId());
+            throw new MoreThenOneMatchingException("More then one status matching prodID: " + product.getId());
+        } else throw new NoMatchingException("Have no one status matching prodID: " + product.getId());
 
     }
 

@@ -1,5 +1,6 @@
 package com.ekoskladvalidator.ParseUtils;
 
+import com.ekoskladvalidator.CustomExceptions.NotValidQueryException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,11 +18,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Component
-public class QueryParserImpl implements QueryParser {
+public class DocQueryParserImpl implements DocQueryParser {
 
-    private static final Logger log = LoggerFactory.getLogger(QueryParserImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(DocQueryParserImpl.class);
 
-    public QueryParserImpl() {
+    public DocQueryParserImpl() {
     }
 
     @Override
@@ -76,12 +77,12 @@ public class QueryParserImpl implements QueryParser {
     }
 
     @Override
-    public Optional<String> getStringBuyXpath(Document document, String xPath) throws Exception {
+    public Optional<String> getStringBuyXpath(Document document, String xPath) throws NotValidQueryException {
         if (xPath.contains("text()")) {
             String str = Xsoup.compile(xPath).evaluate(document).get();
             return Optional.ofNullable(str);
         }
-        throw new Exception("Xpath has no text() function");
+        throw new NotValidQueryException("Xpath has no text() function");
 
     }
 
