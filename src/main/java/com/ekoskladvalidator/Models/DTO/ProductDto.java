@@ -24,7 +24,6 @@ public class ProductDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String external_id;
 
-
     private Presence presence;
 
     //    @JsonIgnore

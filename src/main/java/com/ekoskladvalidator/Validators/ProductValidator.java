@@ -94,10 +94,10 @@ public class ProductValidator {
                     }
                     return false;
                 }).
-        collect(Collectors.toList()).stream().map(product -> {
-                    product.setValidationStatus(false);
-                    return product;
-                }).collect(Collectors.toList());
+                collect(Collectors.toList()).stream().map(product -> {
+            product.setValidationStatus(false);
+            return product;
+        }).collect(Collectors.toList());
 
         for (Product prFV : productListForValidation) {
             logger.error("Getting valid Price of product id : " + prFV.getId());
@@ -193,7 +193,16 @@ public class ProductValidator {
         }
 
         if (product.isDataForValidatingExist()) {
-            Optional<Float> newPrice = priceValidatorUtils.getValidPriceByCssQuery(syncedProduct.getUrlForValidating(),
+            Document document;
+
+            try {
+                document = docQueryParser.getDocument(syncedProduct.getUrlForValidating())
+                        .orElseThrow(() -> new NoDocumentException("Couldn't get document from url : " + syncedProduct.getUrlForValidating()));
+            } catch (Exception e) {
+                logger.error(ExceptionUtils.getStackTrace(e));
+                return Collections.emptyList();
+            }
+            Optional<Float> newPrice = priceValidatorUtils.getValidPriceByCssQuery(document,
                     syncedProduct.getCssQueryForValidating());
 
             if (newPrice.isPresent()) {
@@ -201,6 +210,18 @@ public class ProductValidator {
                 syncedProduct.setValidationStatus(true);
                 syncedProduct.updateLastValidationDate();
             } else syncedProduct.setValidationStatus(false);
+
+            try {
+                logger.error("Setting PRESENCE for product : " + syncedProduct.getUrlForValidating());
+                syncedProduct.setPresence(getPresence(document, syncedProduct));
+                logger.error("PRESENCE is : " + syncedProduct.getPresence());
+            } catch (NoSupplierResourceException | MalformedURLException | MoreThenOneMatchingException | NotValidQueryException e) {
+                logger.error(ExceptionUtils.getStackTrace(e));
+            } catch (NoMatchingException e) {
+                logger.error(ExceptionUtils.getStackTrace(e));
+                syncedProduct.setPresence(Presence.not_available);
+                logger.error("PRESENCE is : " + syncedProduct.getPresence());
+            }
 
         } else syncedProduct.setValidationStatus(false);
 
