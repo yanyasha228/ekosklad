@@ -2,7 +2,6 @@ package com.ekoskladvalidator.RestControllers;
 
 import com.ekoskladvalidator.Models.PromApiKey;
 import com.ekoskladvalidator.Services.PromApiKeyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;

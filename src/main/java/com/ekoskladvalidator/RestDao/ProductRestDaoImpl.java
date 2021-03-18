@@ -7,7 +7,6 @@ import com.ekoskladvalidator.Models.HelpRestModels.ProductsListResponse;
 import com.ekoskladvalidator.Models.PromApiKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 public class ProductRestDaoImpl implements ProductRestDao {
 
-    private static Logger logger = LoggerFactory.getLogger(ProductRestDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductRestDaoImpl.class);
 
     @Value("${rest.prom.api.token}")
     private String apiToken;
@@ -51,7 +50,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
         HttpEntity<ProductResponse> entity = new HttpEntity<ProductResponse>(headers);
 
         logger.error("Executing entity with id: " + id);
-        ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByIdUri, String.valueOf(id)), HttpMethod.GET, entity, ProductResponse.class);
+        ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByIdUri, id), HttpMethod.GET, entity, ProductResponse.class);
 
         if (productResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productResponseEntity.getBody() != null) {
@@ -77,7 +76,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
         HttpEntity<ProductResponse> entity = new HttpEntity<ProductResponse>(headers);
 
         logger.error("Executing entity with id: " + id);
-        ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByIdUri, String.valueOf(id)), HttpMethod.GET, entity, ProductResponse.class);
+        ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByIdUri, id), HttpMethod.GET, entity, ProductResponse.class);
 
         if (productResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productResponseEntity.getBody() != null) {
@@ -102,7 +101,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
         headers.set("Authorization", String.format("Bearer %s", apiToken));
         HttpEntity<ProductsListResponse> entity = new HttpEntity<ProductsListResponse>(headers);
 
-        ResponseEntity<ProductsListResponse> productsListResponseEntity = restTemplate.exchange(String.format(getProductsByGroupIdUri, String.valueOf(groupId)), HttpMethod.GET, entity, ProductsListResponse.class);
+        ResponseEntity<ProductsListResponse> productsListResponseEntity = restTemplate.exchange(String.format(getProductsByGroupIdUri, groupId), HttpMethod.GET, entity, ProductsListResponse.class);
 
         if (productsListResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productsListResponseEntity.getBody() != null) {
@@ -202,7 +201,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
         HttpEntity<ProductResponse> entity = new HttpEntity<ProductResponse>(headers);
 
         logger.error("Executing entity with id: " + external_id);
-        ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByExternalIdUri, String.valueOf(external_id)), HttpMethod.GET, entity, ProductResponse.class);
+        ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByExternalIdUri, external_id), HttpMethod.GET, entity, ProductResponse.class);
 
         if (productResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productResponseEntity.getBody() != null) {

@@ -10,7 +10,6 @@ import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ModelIdApiKeyLineService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.PromApiKeyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

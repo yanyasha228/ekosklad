@@ -35,7 +35,7 @@ public class GroupRestController {
 
 
         if (id > 0) {
-            if(!groupService.findById(id).isPresent()) {
+            if (!groupService.findById(id).isPresent()) {
                 List<Product> productRestList = productRestService.getProductsByGroupId(id);
                 if (!productRestList.isEmpty()) {
                     productService.save(productRestList);

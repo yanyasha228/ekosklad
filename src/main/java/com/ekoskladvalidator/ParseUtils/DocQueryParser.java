@@ -18,7 +18,7 @@ public interface DocQueryParser {
 
     Optional<String> getFirstElementValue(Document document, String cssQuery) throws IOException;
 
-    Optional<String> getStringBuyXpath(Document document,  String xPath) throws NotValidQueryException;
+    Optional<String> getStringBuyXpath(Document document, String xPath) throws NotValidQueryException;
 
     List<String> getElementsValues(String url, String cssQuery) throws IOException;
 

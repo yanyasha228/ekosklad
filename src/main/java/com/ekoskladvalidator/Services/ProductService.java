@@ -64,9 +64,9 @@ public interface ProductService {
                                                                                                   Pageable pageable);
 
     Page<Product> findProductsWithPagination(String nonFullProductName,
-                                                    Group group,
-                                                    Boolean validationStatus,
-                                                    Pageable pageable);
+                                             Group group,
+                                             Boolean validationStatus,
+                                             Pageable pageable);
 
     Page<Product> findAll(Specification<Product> specification, Pageable pageable);
 

@@ -5,7 +5,6 @@ import com.ekoskladvalidator.Dao.GroupDao;
 import com.ekoskladvalidator.Models.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +25,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group save(Group group) throws ImpossibleEntitySaveUpdateException {
 
-        if(group!=null)
-            if(group.getId()<=0)throw new ImpossibleEntitySaveUpdateException("Attempt to update entity without ID!!!");
+        if (group != null)
+            if (group.getId() <= 0)
+                throw new ImpossibleEntitySaveUpdateException("Attempt to update entity without ID!!!");
 
 
         return groupDao.save(group);

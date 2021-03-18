@@ -14,11 +14,11 @@ public interface ProductRestDao {
 
     List<ProductDto> postProducts(List<ProductDto> productDtos);
 
-    Optional<ProductDto> getProductByExternalIdAndApiToken(int external_id , PromApiKey promApiKey);
+    Optional<ProductDto> getProductByExternalIdAndApiToken(int external_id, PromApiKey promApiKey);
 
-    List<ProductDto> postProductsByApiToken(PromApiKey promApiKey , List<ProductDto> productDtos);
+    List<ProductDto> postProductsByApiToken(PromApiKey promApiKey, List<ProductDto> productDtos);
 
-    Optional<ProductDto> getProductByIdAndApiToken(int id , PromApiKey promApiKey);
+    Optional<ProductDto> getProductByIdAndApiToken(int id, PromApiKey promApiKey);
 
 
 }

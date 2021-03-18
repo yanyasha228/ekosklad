@@ -20,13 +20,13 @@ public class CheckDataRestController {
     private ProductValidatorUtils priceValidatorUtils;
 
     @PostMapping
-    private Map<String , String> check(@RequestParam String url ,
+    private Map<String, String> check(@RequestParam String url,
                                       @RequestParam String cssQuery) throws IOException {
 
-        HashMap<String,String> response = new HashMap<>();
+        HashMap<String, String> response = new HashMap<>();
 
-        if(!url.isEmpty() && !cssQuery.isEmpty()){
-            Optional<Float> pG = priceValidatorUtils.getValidPriceByCssQuery(url,cssQuery);
+        if (!url.isEmpty() && !cssQuery.isEmpty()) {
+            Optional<Float> pG = priceValidatorUtils.getValidPriceByCssQuery(url, cssQuery);
             pG.ifPresent(aFloat -> response.put("price", String.valueOf(aFloat)));
         }
 

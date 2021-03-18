@@ -7,8 +7,8 @@ import com.ekoskladvalidator.Models.SpecSearchModels.SearchSpecification;
 import com.ekoskladvalidator.Services.GroupService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.PromApiKeyService;
+import com.ekoskladvalidator.Services.SupplierResourceService;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,19 +33,23 @@ public class ProductsController {
 
     private final PromApiKeyService promApiKeyService;
 
-    public ProductsController(ProductService productService, GroupService groupService, PromApiKeyService promApiKeyService) {
+    private final SupplierResourceService supplierResourceService;
+
+    public ProductsController(ProductService productService, GroupService groupService, PromApiKeyService promApiKeyService, SupplierResourceService supplierResourceService) {
         this.productService = productService;
         this.groupService = groupService;
         this.promApiKeyService = promApiKeyService;
+        this.supplierResourceService = supplierResourceService;
     }
 
     @GetMapping
     public String productsList(Model model,
-                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 5) Pageable pageable,
+                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 15) Pageable pageable,
                                @RequestParam Optional<Boolean> validationStatus,
                                @RequestParam Optional<Integer> groupId,
                                @RequestParam Optional<String> nonFullProductName,
-                               @RequestParam Optional<Presence> presence) {
+                               @RequestParam Optional<Presence> presence,
+                               @RequestParam Optional<String> supplierResourceHost) {
 
 
 //        Page<Product> productsPage = productService.findProductsWithPagination(nonFullProductName.orElse(""),
@@ -57,7 +61,9 @@ public class ProductsController {
         SearchSpecification<Product> groupSpec = new SearchSpecification<>(new SearchCriteria("group", "=", groupService.findById(groupId.orElse(0)).orElse(null)));
         SearchSpecification<Product> availabilitySpec = new SearchSpecification<>(new SearchCriteria("validationStatus", "=", validationStatus.orElse(null)));
         SearchSpecification<Product> reasonSpec = new SearchSpecification<>(new SearchCriteria("presence", "=", presence.orElse(null)));
-        Page<Product> productsPage = productService.findAll(nameSpec.and(groupSpec).and(availabilitySpec).and(reasonSpec), pageable);
+        SearchSpecification<Product> suppResSpec = new SearchSpecification<>(new SearchCriteria("urlForValidating", ":", supplierResourceHost.orElse(null)));
+
+        Page<Product> productsPage = productService.findAll(nameSpec.and(groupSpec).and(availabilitySpec).and(reasonSpec).and(suppResSpec), pageable);
 
         model.addAttribute("validationStatus", validationStatus.orElse(null));
 
@@ -66,6 +72,10 @@ public class ProductsController {
         model.addAttribute("nonFullProductName", nonFullProductName.orElse(""));
 
         model.addAttribute("presence", presence.orElse(null));
+
+        model.addAttribute("supplierResources", supplierResourceService.findAll());
+
+        model.addAttribute("supplierResourceHost", supplierResourceHost.orElse(null));
 
         model.addAttribute("productsPage",
                 productsPage);

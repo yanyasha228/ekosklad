@@ -29,23 +29,23 @@ public interface ProductDao extends JpaRepository<Product, Integer>, JpaSpecific
                                       Pageable pageable);
 
     Page<Product> findProductsByValidationStatus(boolean validationStatus,
-                                                       Pageable pageable);
+                                                 Pageable pageable);
 
     Page<Product> findProductsByGroupAndValidationStatus(Group group,
-                                                               boolean validationStatus,
-                                                               Pageable pageable);
+                                                         boolean validationStatus,
+                                                         Pageable pageable);
 
     Page<Product> findProductsByNameIgnoreCaseContainingAndGroup(String nonFullName,
                                                                  Group group,
                                                                  Pageable pageable);
 
     Page<Product> findProductsByNameIgnoreCaseContainingAndValidationStatus(String nonFullName,
-                                                                                  boolean validationStatus,
-                                                                                  Pageable pageable);
+                                                                            boolean validationStatus,
+                                                                            Pageable pageable);
 
     Page<Product> findProductsByNameIgnoreCaseContainingAndGroupAndValidationStatus(String nonFullName,
-                                                                                          Group group,
-                                                                                          boolean validationStatus,
-                                                                                          Pageable pageable);
+                                                                                    Group group,
+                                                                                    boolean validationStatus,
+                                                                                    Pageable pageable);
 
 }

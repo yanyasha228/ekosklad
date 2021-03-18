@@ -1,7 +1,6 @@
 package com.ekoskladvalidator.Services;
 
 import com.ekoskladvalidator.Models.ModelIdApiKeyLine;
-import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Models.PromApiKey;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

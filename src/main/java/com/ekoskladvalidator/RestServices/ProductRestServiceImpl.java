@@ -5,11 +5,8 @@ import com.ekoskladvalidator.Models.ModelIdApiKeyLine;
 import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Models.PromApiKey;
 import com.ekoskladvalidator.ObjectMappers.ProductMapper;
-import com.ekoskladvalidator.RestDao.GroupRestDao;
 import com.ekoskladvalidator.RestDao.ProductRestDao;
-import com.ekoskladvalidator.Services.GroupService;
 import com.ekoskladvalidator.Services.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

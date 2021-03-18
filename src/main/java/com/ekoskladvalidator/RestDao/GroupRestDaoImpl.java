@@ -37,8 +37,8 @@ public class GroupRestDaoImpl implements GroupRestDao {
         HttpEntity<GroupsListResponse> entity = new HttpEntity<GroupsListResponse>(headers);
         ResponseEntity<GroupsListResponse> groupsRestListResponseEntity = restTemplate.exchange(getGroupsListUrl, HttpMethod.GET, entity, GroupsListResponse.class);
         if (groupsRestListResponseEntity.getStatusCode() == HttpStatus.OK) {
-            if(groupsRestListResponseEntity.getBody()!=null)
-            return groupsRestListResponseEntity.getBody().getGroups();
+            if (groupsRestListResponseEntity.getBody() != null)
+                return groupsRestListResponseEntity.getBody().getGroups();
         }
         return Collections.emptyList();
     }

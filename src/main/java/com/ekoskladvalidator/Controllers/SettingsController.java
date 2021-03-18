@@ -1,7 +1,6 @@
 package com.ekoskladvalidator.Controllers;
 
 import com.ekoskladvalidator.Services.PromApiKeyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

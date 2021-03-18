@@ -82,10 +82,8 @@ public class Product implements Serializable {
     private void modifyDataForValidationFlag() {
 
         if (urlForValidating != null && cssQueryForValidating != null) {
-            if (urlForValidating.replaceAll(" ", "").equalsIgnoreCase("") ||
-                    cssQueryForValidating.replaceAll(" ", "").equalsIgnoreCase("")) {
-                setDataForValidatingExist(false);
-            } else setDataForValidatingExist(true);
+            setDataForValidatingExist(!urlForValidating.replaceAll(" ", "").equalsIgnoreCase("") &&
+                    !cssQueryForValidating.replaceAll(" ", "").equalsIgnoreCase(""));
         } else setDataForValidatingExist(false);
 
 

@@ -19,7 +19,7 @@ public interface PromApiKeyService {
 
     Optional<PromApiKey> findByShopName(String name);
 
-    void  delete(Integer id);
+    void delete(Integer id);
 
     Page<PromApiKey> findAll(Pageable pageable);
 

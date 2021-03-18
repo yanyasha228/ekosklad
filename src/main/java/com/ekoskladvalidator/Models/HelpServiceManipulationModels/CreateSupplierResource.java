@@ -5,14 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
-import java.util.List;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 public class CreateSupplierResource {
 
-    public CreateSupplierResource(String name , String someUrlFromSource, Set<PresenceMatcher> presenceMatchers) {
+    public CreateSupplierResource(String name, String someUrlFromSource, Set<PresenceMatcher> presenceMatchers) {
         this.someUrlFromSource = someUrlFromSource;
         this.presenceMatchers = presenceMatchers;
     }

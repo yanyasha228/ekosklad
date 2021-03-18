@@ -3,7 +3,6 @@ package com.ekoskladvalidator.RestServices;
 import com.ekoskladvalidator.Models.Group;
 import com.ekoskladvalidator.ObjectMappers.GroupMapper;
 import com.ekoskladvalidator.RestDao.GroupRestDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

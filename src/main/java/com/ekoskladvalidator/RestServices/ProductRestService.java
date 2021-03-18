@@ -11,7 +11,7 @@ public interface ProductRestService {
 
     Optional<Product> getProductById(int id);
 
-    Optional<Product> getProductByIdAndApiToken(int id , PromApiKey promApiKey);
+    Optional<Product> getProductByIdAndApiToken(int id, PromApiKey promApiKey);
 
     List<Product> getAll() throws InterruptedException;
 
@@ -23,7 +23,7 @@ public interface ProductRestService {
 
     List<Product> postProducts(List<Product> productList) throws InterruptedException;
 
-    Optional<Product> getProductByExternalIdAndApiToken(int external_id , PromApiKey promApiKey);
+    Optional<Product> getProductByExternalIdAndApiToken(int external_id, PromApiKey promApiKey);
 
 
 }

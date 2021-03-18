@@ -14,12 +14,22 @@
 <div th:replace="allPagesTemplates :: navBar"></div>
 
 <style>
+    #name {
+        text-align: left;
+        max-width: 800px;
+    }
+
     td {
-        max-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        text-align: center;
     }
+
+    th {
+        text-align: center;
+    }
+
 </style>
 
 </div>
@@ -39,8 +49,6 @@
                    data-toggle="modal"
                    data-target="#addProductModal"><i class="material-icons">&#xe147;</i>
                     <span>Добавить Товар</span></a>
-                <a th:href="@{/products}" class="btn btn-primary"><i class="material-icons">&#xE863;</i>
-                    <span>Сбросить фильтры</span></a>
             </div>
         </div>
     </div>
@@ -53,6 +61,7 @@
                         <option th:value="@{/products(size=5 ,
                         validationStatus = ${validationStatus},
                              groupId = ${groupId} ,
+                             supplierResourceHost = ${supplierResourceHost},
                              presence = ${presence},
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${productsPage.getSize() == 5}">5
@@ -60,6 +69,7 @@
                         <option th:value="@{/products(size=15 ,
                              validationStatus = ${validationStatus},
                              groupId = ${groupId} ,
+                             supplierResourceHost = ${supplierResourceHost},
                              presence = ${presence},
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${productsPage.getSize() == 15}">15
@@ -67,6 +77,7 @@
                         <option th:value="@{/products(size=50 ,
                              validationStatus = ${validationStatus},
                              groupId = ${groupId} ,
+                             supplierResourceHost = ${supplierResourceHost},
                              presence = ${presence},
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${productsPage.getSize() == 50}">50
@@ -74,6 +85,7 @@
                         <option th:value="@{/products(size=100 ,
                              validationStatus = ${validationStatus},
                              groupId = ${groupId} ,
+                             supplierResourceHost = ${supplierResourceHost},
                              presence = ${presence},
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${productsPage.getSize() == 100}">100
@@ -101,6 +113,7 @@
                                 th:value="@{/products(size=${productsPage.getSize()} ,
                              validationStatus = ${validationStatus},
                              presence = ${presence},
+                             supplierResourceHost = ${supplierResourceHost},
                              groupId = null ,
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${groupId == null}">Все
@@ -110,6 +123,7 @@
                                         size=${productsPage.getSize()} ,
                               validationStatus = ${validationStatus},
                               presence = ${presence},
+                              supplierResourceHost = ${supplierResourceHost},
                              groupId = ${group.getId()},
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${groupId == group.getId() }"
@@ -126,6 +140,7 @@
                                         size=${productsPage.getSize()} ,
                              validationStatus = null,
                              presence = ${presence},
+                             supplierResourceHost = ${supplierResourceHost},
                               groupId = ${groupId} ,
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${validationStatus == null}">Все
@@ -134,6 +149,7 @@
                                         size=${productsPage.getSize()} ,
                              validationStatus = true,
                              presence = ${presence},
+                             supplierResourceHost = ${supplierResourceHost},
                               groupId = ${groupId} ,
                              nonFullProductName = ${nonFullProductName})}"
                                 th:selected="${validationStatus == true}">Валидируются
@@ -142,6 +158,7 @@
                         <option th:value="@{/products(
                                         size=${productsPage.getSize()} ,
                              validationStatus = false,
+                             supplierResourceHost = ${supplierResourceHost},
                              presence = ${presence},
                               groupId = ${groupId} ,
                              nonFullProductName = ${nonFullProductName})}"
@@ -151,13 +168,14 @@
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>Статус</label>
+                    <label>Наличие</label>
                     <select id="presence" class="form-control"
                             onchange="location = this.value;">
                         <option th:value="@{/products(
                                         size=${productsPage.getSize()} ,
                              validationStatus = ${validationStatus},
                               groupId = ${groupId} ,
+                              supplierResourceHost = ${supplierResourceHost},
                              nonFullProductName = ${nonFullProductName},
                              presence = null)}"
                                 th:selected="${presence == null}">Все
@@ -166,6 +184,7 @@
                                 th:value="@{/products(size=${productsPage.getSize()} ,
                              validationStatus = ${validationStatus},
                               groupId = ${groupId} ,
+                              supplierResourceHost = ${supplierResourceHost},
                              nonFullProductName = ${nonFullProductName},
                              presence = ${pres})}"
                                 th:selected="${pres == presence}"
@@ -173,6 +192,35 @@
                         </option>
 
                     </select>
+                </div>
+                <div class="filter-group">
+                    <label>Поставщик</label>
+                    <select id="supplierResourceHost" class="form-control"
+                            onchange="location = this.value;">
+                        <option th:value="@{/products(
+                                        size=${productsPage.getSize()} ,
+                             validationStatus = ${validationStatus},
+                              groupId = ${groupId} ,
+                              presence = ${presence},
+                             nonFullProductName = ${nonFullProductName},
+                             supplierResourceHost = null)}"
+                                th:selected="${supplierResourceHost == null}">Все
+                        </option>
+                        <option th:each="suppRes : ${supplierResources}"
+                                th:value="@{/products(size=${productsPage.getSize()} ,
+                             validationStatus = ${validationStatus},
+                              groupId = ${groupId} ,
+                              presence = ${presence},
+                             nonFullProductName = ${nonFullProductName},
+                             supplierResourceHost = ${suppRes.getHostUrl()})}"
+                                th:selected="${suppRes.getHostUrl() == supplierResourceHost}"
+                                th:text="${suppRes.getName()}">
+                        </option>
+
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <a th:href="@{/products}" class="btn btn-primary"><i class="material-icons">&#xE863;</i></a>
                 </div>
                 <span class="filter-icon"><i class="fa fa-filter"></i></span>
             </div>
@@ -199,9 +247,9 @@
             <td><img th:src="@{${product.getMain_image()}}"
                      width="70" height="70" class="avatar"
                      alt="Avatar"></td>
-            <td><a th:href="@{/products/{id}/edit(id=${product.getId()})}"
-                   th:text="${product.getName()}"
-                   th:title="${product.getName()}">
+            <td id="name"><a th:href="@{/products/{id}/edit(id=${product.getId()})}"
+                             th:text="${product.getName()}"
+                             th:title="${product.getName()}">
             </a></td>
             </td>
             <!--            <td th:text="${#dates.format(product.getLastValidationDate(), 'dd-MM-yyyy')}"></td>-->
@@ -233,6 +281,7 @@
                     th:href="@{/products(size=${productsPage.getSize()} ,
                              validationStatus = ${validationStatus},
                              presence = ${presence},
+                             supplierResourceHost = ${supplierResourceHost},
                              groupId = ${groupId} ,
                              nonFullProductName = ${nonFullProductName})}"
                     class="page-link"> << </a></li>
@@ -241,6 +290,7 @@
                                         size=${productsPage.getSize()} ,
                             validationStatus = ${validationStatus},
                             presence = ${presence},
+                            supplierResourceHost = ${supplierResourceHost},
                              groupId = ${groupId} ,
                              nonFullProductName = ${nonFullProductName})}"
                     th:if="${productsPage.getNumber() > 0}"
@@ -252,6 +302,7 @@
                                         size=${productsPage.getSize()} ,
                              validationStatus = ${validationStatus},
                              presence = ${presence},
+                             supplierResourceHost = ${supplierResourceHost},
                              groupId = ${groupId} ,
                              nonFullProductName = ${nonFullProductName})}"
                     th:if="${(productsPage.getNumber() + 1) < productsPage.getTotalPages()}"
@@ -262,6 +313,7 @@
                                         size=${productsPage.getSize()} ,
                             validationStatus = ${validationStatus},
                             presence = ${presence},
+                            supplierResourceHost = ${supplierResourceHost},
                              groupId = ${groupId} ,
                              nonFullProductName = ${nonFullProductName})}"
                     class="page-link"> >> </a></li>

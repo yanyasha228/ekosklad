@@ -40,8 +40,8 @@ public class ProductRestController {
         if (Objects.nonNull(id) && id > 0 && Objects.nonNull(keyId) && keyId > 0) {
             if (!productService.findById(id).isPresent()) {
                 Optional<PromApiKey> promApiKey = promApiKeyService.findById(keyId);
-                if(promApiKey.isPresent()) {
-                    Optional<Product> productRest = productRestService.getProductByIdAndApiToken(id , promApiKey.get());
+                if (promApiKey.isPresent()) {
+                    Optional<Product> productRest = productRestService.getProductByIdAndApiToken(id, promApiKey.get());
                     if (productRest.isPresent()) {
                         Product prodToEd = productService.save(productRest.get());
                         ModelIdApiKeyLine modelIdApiKeyLine = new ModelIdApiKeyLine();

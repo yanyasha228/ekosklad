@@ -12,7 +12,7 @@ import java.util.Map;
 public class ErrorsResponse {
 
     @JsonAnySetter
-    private Map<Integer, Map<String,String>> errors;
+    private Map<Integer, Map<String, String>> errors;
 
     @JsonAnyGetter
     public Map<Integer, Map<String, String>> getErrors() {

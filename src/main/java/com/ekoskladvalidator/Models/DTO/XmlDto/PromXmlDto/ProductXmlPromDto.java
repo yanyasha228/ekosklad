@@ -104,5 +104,4 @@ public class ProductXmlPromDto {
     private String keywords;
 
 
-
 }

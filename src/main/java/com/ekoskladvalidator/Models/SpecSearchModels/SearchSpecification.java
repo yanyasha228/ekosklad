@@ -25,21 +25,21 @@ public class SearchSpecification<T> implements Specification<T> {
 
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
-                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
+                    root.get(criteria.getKey()), criteria.getValue().toString());
         } else if (criteria.getOperation().equalsIgnoreCase("<")) {
             return builder.lessThanOrEqualTo(
-                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
+                    root.get(criteria.getKey()), criteria.getValue().toString());
         } else if (criteria.getOperation().equalsIgnoreCase(":")) {
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
                 return builder.like(
-                        builder.upper(root.<String>get(criteria.getKey())), "%" + criteria.getValue().toString().toUpperCase() + "%");
+                        builder.upper(root.get(criteria.getKey())), "%" + criteria.getValue().toString().toUpperCase() + "%");
             } else {
                 return builder.equal(root.get(criteria.getKey()), criteria.getValue());
             }
         } else if (criteria.getOperation().equalsIgnoreCase("=")) {
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
                 return builder.like(
-                        root.<String>get(criteria.getKey()), criteria.getValue().toString());
+                        root.get(criteria.getKey()), criteria.getValue().toString());
             } else {
                 return builder.equal(root.get(criteria.getKey()), criteria.getValue());
             }
