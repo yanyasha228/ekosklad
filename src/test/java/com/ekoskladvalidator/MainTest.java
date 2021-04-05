@@ -1,32 +1,31 @@
 package com.ekoskladvalidator;
 
-import com.ekoskladvalidator.Models.DTO.ProductDto;
-import com.ekoskladvalidator.Models.Enums.Presence;
+import com.ekoskladvalidator.CustomExceptions.NoSupplierResourceException;
+import com.ekoskladvalidator.CustomExceptions.NotValidQueryException;
+import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.Product;
+import com.ekoskladvalidator.Models.SupplierResource;
 import com.ekoskladvalidator.ObjectMappers.ProductMapper;
 import com.ekoskladvalidator.ParseUtils.DocQueryParser;
 import com.ekoskladvalidator.RestDao.ProductRestDao;
 import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ProductService;
+import com.ekoskladvalidator.Services.SupplierResourceService;
 import com.ekoskladvalidator.Validators.ProductValidator;
+import org.jsoup.nodes.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.MalformedURLException;
-import java.net.URI;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -48,6 +47,10 @@ public class MainTest {
     private ProductRestService productRestService;
 
     @Autowired
+    private SupplierResourceService supplierResourceService;
+
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
@@ -57,25 +60,19 @@ public class MainTest {
     private String apiToken;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() throws URISyntaxException, IOException, NoSupplierResourceException, NotValidQueryException {
+//        Product product = productService.findById(1266795967).get();
+//        Product product = productService.findById(1106697088).get();
+        Product product = productService.findById(1266840942).get();
+        Document document = docQueryParser.getDocument(product.getUrlForValidating()).get();
+        SupplierResource supplierResource = supplierResourceService.findByHostUrl(new URL(product.getUrlForValidating()).getHost())
+                .orElseThrow(() -> new NoSupplierResourceException("No supplierResource for such host: " + product.getUrlForValidating()));
+        Set<PresenceMatcher> presenceMatcherSet = supplierResource.getPresenceMatchers();
 
-        List<Product> productList = productService.findAll().stream().filter(Product::isDataForValidatingExist).collect(Collectors.toList());
-
-        Map<String, List<Product>> stringListMap = new HashMap<>();
-
-        for (Product product : productList) {
-            String host = new URI(product.getUrlForValidating()).getHost();
-
-            if (stringListMap.containsKey(host)) {
-                stringListMap.get(host).add(product);
-            } else {
-                stringListMap.put(host, new ArrayList<>() {{
-                    add(product);
-                }});
-            }
+        for (PresenceMatcher presenceMatcher : presenceMatcherSet) {
+            Optional<String> value = docQueryParser.getStringBuyXpath(document, presenceMatcher.getPresencePathQuery());
+            int i = 0;
         }
-
-        int i = 0;
     }
 
 }
