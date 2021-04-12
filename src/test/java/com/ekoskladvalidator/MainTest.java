@@ -63,7 +63,7 @@ public class MainTest {
     public void test() throws URISyntaxException, IOException, NoSupplierResourceException, NotValidQueryException {
 //        Product product = productService.findById(1266795967).get();
 //        Product product = productService.findById(1106697088).get();
-        Product product = productService.findById(1266840942).get();
+        Product product = productService.findById(1106697088).get();
         Document document = docQueryParser.getDocument(product.getUrlForValidating()).get();
         SupplierResource supplierResource = supplierResourceService.findByHostUrl(new URL(product.getUrlForValidating()).getHost())
                 .orElseThrow(() -> new NoSupplierResourceException("No supplierResource for such host: " + product.getUrlForValidating()));

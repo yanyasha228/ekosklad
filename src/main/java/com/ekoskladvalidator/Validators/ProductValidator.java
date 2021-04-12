@@ -3,6 +3,7 @@ package com.ekoskladvalidator.Validators;
 
 import com.ekoskladvalidator.CustomExceptions.*;
 import com.ekoskladvalidator.Models.Enums.Presence;
+import com.ekoskladvalidator.Models.Enums.QueryType;
 import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Models.SupplierResource;
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public class ProductValidator {
     }
 
 
-//    @Scheduled(fixedDelay = 12000000)
+    @Scheduled(fixedDelay = 12000000)
     public void validateProducts() throws InterruptedException {
 
         List<Product> syncProductList = dbRestSynchronizer.synchronizeDbProductsWithRestApiModels();
@@ -124,7 +125,7 @@ public class ProductValidator {
                 logger.error("Setting PRESENCE for product : " + prFV.getUrlForValidating());
                 prFV.setPresence(getPresence(document, prFV));
                 logger.error("PRESENCE is : " + prFV.getPresence());
-            } catch (NoSupplierResourceException | MalformedURLException | MoreThenOneMatchingException | NotValidQueryException e) {
+            } catch (NoSupplierResourceException | MoreThenOneMatchingException | NotValidQueryException | IOException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));
             } catch (NoMatchingException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));
@@ -149,7 +150,7 @@ public class ProductValidator {
     }
 
     public Presence getPresence(Document document, Product product)
-            throws MalformedURLException,
+            throws IOException,
             NoSupplierResourceException,
             NotValidQueryException, MoreThenOneMatchingException, NoMatchingException {
 
@@ -162,7 +163,13 @@ public class ProductValidator {
 
         for (PresenceMatcher presenceMatcher : presenceMatcherSet) {
 
-            Optional<String> value = docQueryParser.getStringBuyXpath(document, presenceMatcher.getPresencePathQuery());
+            Optional<String> value = Optional.empty();
+
+            if (presenceMatcher.getQueryType() == QueryType.X_PATH) {
+                value = docQueryParser.getStringBuyXpath(document, presenceMatcher.getPresencePathQuery());
+            } else if (presenceMatcher.getQueryType() == QueryType.CSS_QUERY) {
+                value = docQueryParser.getFirstElementValue(document, presenceMatcher.getPresencePathQuery());
+            }
 
             if (value.isPresent()) {
                 if (value.get().contains(presenceMatcher.getContainString()))
@@ -214,7 +221,7 @@ public class ProductValidator {
                 logger.error("Setting PRESENCE for product : " + syncedProduct.getUrlForValidating());
                 syncedProduct.setPresence(getPresence(document, syncedProduct));
                 logger.error("PRESENCE is : " + syncedProduct.getPresence());
-            } catch (NoSupplierResourceException | MalformedURLException | MoreThenOneMatchingException | NotValidQueryException e) {
+            } catch (NoSupplierResourceException | MoreThenOneMatchingException | NotValidQueryException | IOException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));
             } catch (NoMatchingException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));

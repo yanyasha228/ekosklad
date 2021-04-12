@@ -45,14 +45,14 @@
 <form id="orderForm" th:action="@{edit/submit}" method="post" role="form"
       autocomplete="off">
 
-    <div id="presenceMatchers" class="form-group col-md-8">
+    <div id="presenceMatchers" class="form-group col-md-10">
         <label for="presenceMatchers"><h5>Статусы наличия:</h5></label>
         <div class="controls-1">
 
             <div id="presenceMatcher" class="entry" th:each="presenceMatcher : ${resource.getPresenceMatchers()}">
                 <div class="form-row">
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-1">
                         <input hidden
                                type="number"
                                class="form-control"
@@ -65,6 +65,17 @@
                                     th:value="${statusIter.name()}"
                                     th:text="${statusIter.getAlias()}"
                                     th:selected="${statusIter == presenceMatcher.getPresence()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-1" id="inputQueryTypeInputDiv">
+                        <label for="selectQueryType">Тип селектора</label>
+                        <select id="selectQueryType" name="queryType" class="form-control">
+                            <option th:each="typeIter : ${T(com.ekoskladvalidator.Models.Enums.QueryType).values()}"
+                                    th:value="${typeIter.name()}"
+                                    th:text="${typeIter.getAlias()}"
+                                    th:selected="${typeIter == presenceMatcher.getQueryType()}">
                             </option>
                         </select>
                     </div>
@@ -98,7 +109,7 @@
             <div id="presenceMatcher" class="entry" th:if="${resource.getPresenceMatchers().size() == 0}">
                 <div class="form-row">
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-1">
                         <input hidden
                                type="number"
                                class="form-control"
@@ -114,7 +125,17 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-md-6" id="inputXPathInputDiv">
+                    <div class="form-group col-md-1" id="inputQueryTypeInputDiv">
+                        <label for="selectQueryType">Тип селектора</label>
+                        <select id="selectQueryType" name="queryType" class="form-control">
+                            <option th:each="typeIter : ${T(com.ekoskladvalidator.Models.Enums.QueryType).values()}"
+                                    th:value="${typeIter.name()}"
+                                    th:text="${typeIter.getAlias()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6" id=" inputXPathInputDiv">
                         <label for="selectStatus">Путь(XPath)</label>
                         <input class="form-control is-invalid"
                                id="xPathInput" type="text"

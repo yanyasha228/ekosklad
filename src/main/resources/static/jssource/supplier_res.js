@@ -1,4 +1,5 @@
 $(function () {
+
     String.prototype.replaceAll = function (search, replace) {
         return this.split(search).join(replace);
     };
@@ -87,11 +88,26 @@ $(function () {
         } else input.attr("class", "form-control is-invalid");
     });
 
+    $(document).on('change', '#selectQueryType', function (e) {
+        var queryType = $(this).val();
+        var queryInput = $(this).closest("div.form-row").find("input[id='xPathInput']");
+
+        if (queryType === "X_PATH") {
+            if (!queryInput.val().endsWith("/text()")) queryInput.val(queryInput.val() + "/text()");
+        } else if (queryType === "CSS_QUERY") {
+            if (queryInput.val().endsWith("/text()")) queryInput.val(queryInput.val().replaceAll("/text()", ""));
+        }
+
+    });
+
     $(document).on('focusout', '#xPathInput', function (e) {
 
         var searchField = $(this).val();
         var input = $(this);
-        if(!searchField.endsWith("/text()")) input.val(searchField + "/text()");
+        var type = $(this).closest("div.form-row").find("select[id='selectQueryType']").val();
+        if (type === "X_PATH") {
+            if (!searchField.endsWith("/text()")) input.val(searchField + "/text()");
+        }
 
         if (searchField.replaceAll(" ", "") !== "") {
             input.attr("class", "form-control is-valid");

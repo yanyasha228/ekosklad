@@ -1,6 +1,7 @@
 package com.ekoskladvalidator.Controllers;
 
 import com.ekoskladvalidator.Models.Enums.Presence;
+import com.ekoskladvalidator.Models.Enums.QueryType;
 import com.ekoskladvalidator.Models.HelpServiceManipulationModels.EditSupplierResource;
 import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.SupplierResource;
@@ -47,7 +48,8 @@ public class SupplierResourcesController {
                                 @RequestParam Integer[] presenceMatcherId,
                                 @RequestParam Presence[] status,
                                 @RequestParam String[] xPathInput,
-                                @RequestParam String[] inputContainsString) throws Exception {
+                                @RequestParam String[] inputContainsString,
+                                @RequestParam QueryType[] queryType) throws Exception {
         if (!((presenceMatcherId.length == status.length)
                 && (presenceMatcherId.length == xPathInput.length)
                 && (presenceMatcherId.length == inputContainsString.length)))
@@ -56,7 +58,7 @@ public class SupplierResourcesController {
         Set<PresenceMatcher> presenceSet = new HashSet<>();
 
         for (int pres = 0; pres < presenceMatcherId.length; pres++) {
-            presenceSet.add(new PresenceMatcher(presenceMatcherId[pres], status[pres], xPathInput[pres], inputContainsString[pres]));
+            presenceSet.add(new PresenceMatcher(presenceMatcherId[pres], status[pres], xPathInput[pres], inputContainsString[pres], queryType[pres]));
         }
         if (presenceSet.size() != 0) {
             EditSupplierResource editSupplierResource = new EditSupplierResource(id.orElseThrow(() -> new Exception("No Supplier Id")), presenceSet);
