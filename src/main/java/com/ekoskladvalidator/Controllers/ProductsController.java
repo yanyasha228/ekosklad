@@ -57,7 +57,15 @@ public class ProductsController {
 //                validationStatus.orElse(null),
 //                pageable);
 
-        SearchSpecification<Product> nameSpec = new SearchSpecification<>(new SearchCriteria("name", ":", nonFullProductName.orElse(null)));
+        SearchSpecification<Product> nameSpec;
+
+        if (nonFullProductName.isPresent() && isNumber(nonFullProductName.get())) {
+            String strNum = nonFullProductName.get().replaceAll(" ", "");
+            Integer id = Integer.parseInt(strNum);
+            nameSpec = new SearchSpecification<>(new SearchCriteria("id", "=", id));
+        } else {
+            nameSpec = new SearchSpecification<>(new SearchCriteria("name", ":", nonFullProductName.orElse(null)));
+        }
         SearchSpecification<Product> groupSpec = new SearchSpecification<>(new SearchCriteria("group", "=", groupService.findById(groupId.orElse(0)).orElse(null)));
         SearchSpecification<Product> availabilitySpec = new SearchSpecification<>(new SearchCriteria("validationStatus", "=", validationStatus.orElse(null)));
         SearchSpecification<Product> reasonSpec = new SearchSpecification<>(new SearchCriteria("presence", "=", presence.orElse(null)));
@@ -86,6 +94,23 @@ public class ProductsController {
         model.addAttribute("keys", promApiKeyService.findAll());
 
         return "products";
+    }
+
+    private boolean isNumber(String gipNum) {
+        int intValue;
+
+        String strNum = gipNum.replaceAll(" ", "");
+
+        if (strNum == null || strNum.equals("")) {
+            return false;
+        }
+
+        try {
+            intValue = Integer.parseInt(strNum);
+            return true;
+        } catch (NumberFormatException e) {
+        }
+        return false;
     }
 
 
