@@ -16,6 +16,8 @@ import com.ekoskladvalidator.Validators.ValidatorUtils.ProductValidatorUtils;
 import lombok.Data;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -60,7 +62,7 @@ public class ProductValidator {
     }
 
 
-    @Scheduled(fixedDelay = 12000000)
+    @Scheduled(fixedDelay = 24000000)
     public void validateProducts() throws InterruptedException {
 
         List<Product> syncProductList = dbRestSynchronizer.synchronizeDbProductsWithRestApiModels();
@@ -82,9 +84,9 @@ public class ProductValidator {
                     return ndToAdd;
                 }).
                 collect(Collectors.toList()).stream().map(product -> {
-            product.setValidationStatus(false);
-            return product;
-        }).collect(Collectors.toList());
+                    product.setValidationStatus(false);
+                    return product;
+                }).collect(Collectors.toList());
 
         List<Product> productListForValidation = productService.findAll().stream().
                 filter(Product::isDataForValidatingExist).
@@ -95,9 +97,9 @@ public class ProductValidator {
                     return false;
                 }).
                 collect(Collectors.toList()).stream().map(product -> {
-            product.setValidationStatus(false);
-            return product;
-        }).collect(Collectors.toList());
+                    product.setValidationStatus(false);
+                    return product;
+                }).collect(Collectors.toList());
 
         for (Product prFV : productListForValidation) {
             logger.error("Getting valid Price of product id : " + prFV.getId());
@@ -125,11 +127,12 @@ public class ProductValidator {
                 logger.error("Setting PRESENCE for product : " + prFV.getUrlForValidating());
                 prFV.setPresence(getPresence(document, prFV));
                 logger.error("PRESENCE is : " + prFV.getPresence());
-            } catch (NoSupplierResourceException | MoreThenOneMatchingException | NotValidQueryException | IOException e) {
+            } catch (NoSupplierResourceException | MoreThenOneMatchingException | NotValidQueryException |
+                     IOException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));
             } catch (NoMatchingException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));
-                prFV.setPresence(Presence.not_available);
+                prFV.setPresence(tableProductsPresence(document, prFV));
                 logger.error("PRESENCE is : " + prFV.getPresence());
             }
 
@@ -147,6 +150,15 @@ public class ProductValidator {
         logger.error("Products that should have been validated after saving amount :" + productThatShouldBeValidatingAfterSaving.size());
         logger.error("Products that have been validated amount :" + productThatHaveBeenValidated.size());
 
+    }
+
+    private Presence tableProductsPresence(Document document, Product product) {
+        if(product.getUrlForValidating().contains("aquapolis.ua")) {
+            Elements tableContentElements = document.select("#super-product-table");
+            if(!tableContentElements.isEmpty()) return Presence.available;
+        }
+
+            return Presence.not_available;
     }
 
     public Presence getPresence(Document document, Product product)
@@ -221,11 +233,12 @@ public class ProductValidator {
                 logger.error("Setting PRESENCE for product : " + syncedProduct.getUrlForValidating());
                 syncedProduct.setPresence(getPresence(document, syncedProduct));
                 logger.error("PRESENCE is : " + syncedProduct.getPresence());
-            } catch (NoSupplierResourceException | MoreThenOneMatchingException | NotValidQueryException | IOException e) {
+            } catch (NoSupplierResourceException | MoreThenOneMatchingException | NotValidQueryException |
+                     IOException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));
             } catch (NoMatchingException e) {
                 logger.error(ExceptionUtils.getStackTrace(e));
-                syncedProduct.setPresence(Presence.not_available);
+                syncedProduct.setPresence(tableProductsPresence(document, syncedProduct));
                 logger.error("PRESENCE is : " + syncedProduct.getPresence());
             }
 
