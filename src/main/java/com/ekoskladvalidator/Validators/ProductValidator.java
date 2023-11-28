@@ -152,14 +152,31 @@ public class ProductValidator {
 
     }
 
-    private Presence tableProductsPresence(Document document, Product product) {
-        if(product.getUrlForValidating().contains("aquapolis.ua")) {
-            Elements tableContentElements = document.select("#super-product-table");
-            if(!tableContentElements.isEmpty()) return Presence.available;
+    public Presence tableProductsPresence(Document document, Product product) {
+        if (product.getUrlForValidating().contains("aquapolis.ua")) {
+            Elements tableContentElements = document.select("#super-product-table tbody tr");
+            if (!tableContentElements.isEmpty()) {
+                boolean allUnavailable = true;
+                for (Element row : tableContentElements) {
+                    Elements unavailableElements = row.select(".stock.unavailable, .qty .stock.unavailable");
+                    if (unavailableElements.isEmpty()) {
+                        allUnavailable = false;
+                        break;
+                    }
+                }
+                return allUnavailable ? Presence.not_available : Presence.available;
+            }
         }
-
-            return Presence.not_available;
+        return Presence.not_available;
     }
+//    public Presence tableProductsPresence(Document document, Product product) {
+//        if(product.getUrlForValidating().contains("aquapolis.ua")) {
+//            Elements tableContentElements = document.select("#super-product-table");
+//            if(!tableContentElements.isEmpty()) return Presence.available;
+//        }
+//
+//            return Presence.not_available;
+//    }
 
     public Presence getPresence(Document document, Product product)
             throws IOException,
