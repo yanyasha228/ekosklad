@@ -210,6 +210,9 @@ public class ProductValidator {
         if (presenceMatchersList.size() == 1) {
             return presenceMatchersList.get(0).getPresence();
         } else if (presenceMatchersList.size() > 1) {
+            Presence presence = presenceMatchersList.get(0).getPresence();
+            boolean allMatch = presenceMatchersList.stream().allMatch(presenceMatcher -> presenceMatcher.getPresence().equals(presence));
+            if(allMatch) return presence;
             throw new MoreThenOneMatchingException("More then one status matching prodID: " + product.getId());
         } else throw new NoMatchingException("Have no one status matching prodID: " + product.getId());
 
