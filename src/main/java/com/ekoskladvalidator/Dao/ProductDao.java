@@ -10,11 +10,11 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductDao extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
+public interface ProductDao extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
     Product save(Product product);
 
-    Optional<Product> findById(int id);
+    Optional<Product> findById(long id);
 
     Optional<Product> findProductByName(String name);
 

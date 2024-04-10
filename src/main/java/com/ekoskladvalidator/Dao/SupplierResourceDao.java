@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface SupplierResourceDao extends JpaRepository<SupplierResource, Integer> {
+public interface SupplierResourceDao extends JpaRepository<SupplierResource, Long> {
 
     Optional<SupplierResource> findByHostUrl(String hostUrl);
 

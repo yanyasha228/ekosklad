@@ -16,7 +16,7 @@ public interface SupplierResourceService {
 
     List<SupplierResource> findAll();
 
-    Optional<SupplierResource> findById(Integer id);
+    Optional<SupplierResource> findById(Long id);
 
     Optional<SupplierResource> findByHostUrl(String hostUrl);
 
@@ -24,5 +24,5 @@ public interface SupplierResourceService {
 
     SupplierResource edit(EditSupplierResource editSupplierResource) throws Exception;
 
-    void delete(Integer id);
+    void delete(Long id);
 }

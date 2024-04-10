@@ -42,7 +42,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
     }
 
     @Override
-    public Optional<ProductDto> getProductById(int id) {
+    public Optional<ProductDto> getProductById(long id) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -68,7 +68,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
     }
 
     @Override
-    public Optional<ProductDto> getProductByIdAndApiToken(int id, PromApiKey promApiKey) {
+    public Optional<ProductDto> getProductByIdAndApiToken(long id, PromApiKey promApiKey) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -94,7 +94,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
     }
 
     @Override
-    public List<ProductDto> getProductsByGroupId(int groupId) {
+    public List<ProductDto> getProductsByGroupId(long groupId) {
         List<ProductDto> productDtos = new ArrayList<>();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -131,7 +131,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
         if (productsEditResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productsEditResponseEntity.getBody() != null) {
                 for (ProductDto productDtoIter : productDtos) {
-                    for (Integer prodUpId : productsEditResponseEntity
+                    for (Long prodUpId : productsEditResponseEntity
                             .getBody().getProcessed_ids()
                     ) {
                         if (productDtoIter.getId() == prodUpId) {
@@ -172,7 +172,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
         if (productsEditResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productsEditResponseEntity.getBody() != null) {
                 for (ProductDto productDtoIter : productDtos) {
-                    for (Integer prodUpId : productsEditResponseEntity
+                    for (Long prodUpId : productsEditResponseEntity
                             .getBody().getProcessed_ids()
                     ) {
                         if (productDtoIter.getId() == prodUpId) {
@@ -194,7 +194,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
     }
 
     @Override
-    public Optional<ProductDto> getProductByExternalIdAndApiToken(int external_id, PromApiKey promApiKey) {
+    public Optional<ProductDto> getProductByExternalIdAndApiToken(long external_id, PromApiKey promApiKey) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", String.format("Bearer %s", promApiKey.getApiKey()));

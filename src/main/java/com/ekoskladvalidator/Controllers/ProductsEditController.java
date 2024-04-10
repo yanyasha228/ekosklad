@@ -31,7 +31,7 @@ public class ProductsEditController {
     }
 
     @GetMapping
-    public String editProduct(Model model, @PathVariable Integer id) {
+    public String editProduct(Model model, @PathVariable Long id) {
 
         Product product = productService.findById(id).orElse(null);
 
@@ -44,11 +44,11 @@ public class ProductsEditController {
 
     @PostMapping("submit")
     public String editProductSubmit(Model model,
-                                    @RequestParam Integer productId,
+                                    @RequestParam Long productId,
                                     @RequestParam String urlForValidation,
                                     @RequestParam String cssQueryForValidating,
-                                    @RequestParam Integer[] keyId,
-                                    @RequestParam Integer[] productApiId) throws ImpossibleEntitySaveUpdateException {
+                                    @RequestParam Long[] keyId,
+                                    @RequestParam Long[] productApiId) throws ImpossibleEntitySaveUpdateException {
 
         Optional<Product> appropriateProductFromDBOpt = productService.findById(productId);
 

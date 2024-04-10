@@ -12,7 +12,7 @@ public interface GroupService {
 
     List<Group> save(List<Group> groupList);
 
-    Optional<Group> findById(int id);
+    Optional<Group> findById(long id);
 
     List<Group> findAll();
 

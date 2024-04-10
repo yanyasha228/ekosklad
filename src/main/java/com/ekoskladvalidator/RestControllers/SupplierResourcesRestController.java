@@ -33,7 +33,7 @@ public class SupplierResourcesRestController {
     }
 
     @DeleteMapping("delete")
-    public void deleteResource(@RequestParam Integer id) {
+    public void deleteResource(@RequestParam Long id) {
         supplierResourceService.delete(id);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class ProductDto implements Serializable {
 
-    private int id;
+    private long id;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String name;

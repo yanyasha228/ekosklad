@@ -49,7 +49,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Optional<Group> findById(int id) {
+    public Optional<Group> findById(long id) {
         return groupDao.findById(id);
     }
 

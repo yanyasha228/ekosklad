@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 public class EditProductsResponse {
 
-    private List<Integer> processed_ids;
+    private List<Long> processed_ids;
 
     private ErrorsResponse errors;
 

@@ -20,12 +20,12 @@ public class ModelIdApiKeyLineServiceImpl implements ModelIdApiKeyLineService {
     }
 
     @Override
-    public Optional<ModelIdApiKeyLine> findById(Integer id) {
+    public Optional<ModelIdApiKeyLine> findById(Long id) {
         return modelIdApiKeyLineDao.findById(id);
     }
 
     @Override
-    public Optional<ModelIdApiKeyLine> findByProductApiId(Integer id) {
+    public Optional<ModelIdApiKeyLine> findByProductApiId(Long id) {
         return modelIdApiKeyLineDao.findByProductApiId(id);
     }
 
@@ -40,12 +40,12 @@ public class ModelIdApiKeyLineServiceImpl implements ModelIdApiKeyLineService {
     }
 
     @Override
-    public Optional<ModelIdApiKeyLine> findByProductApiIdAndPromApiKey(Integer productApiId, PromApiKey promApiKey) {
+    public Optional<ModelIdApiKeyLine> findByProductApiIdAndPromApiKey(Long productApiId, PromApiKey promApiKey) {
         return modelIdApiKeyLineDao.findByProductApiIdAndPromApiKey(productApiId, promApiKey);
     }
 
     @Override
-    public Optional<ModelIdApiKeyLine> findByProductIdAndPromApiKey(Integer id, PromApiKey promApiKey) {
+    public Optional<ModelIdApiKeyLine> findByProductIdAndPromApiKey(Long id, PromApiKey promApiKey) {
         return modelIdApiKeyLineDao.findByProductIdAndPromApiKey(id, promApiKey);
     }
 

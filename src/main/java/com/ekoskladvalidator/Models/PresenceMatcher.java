@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "presence_matchers")
 public class PresenceMatcher {
 
-    public PresenceMatcher(Integer id,
+    public PresenceMatcher(Long id,
                            Presence presence,
                            String presencePathQuery,
                            String containString,
@@ -26,7 +26,7 @@ public class PresenceMatcher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Column(name = "presence")
     @Enumerated(EnumType.STRING)

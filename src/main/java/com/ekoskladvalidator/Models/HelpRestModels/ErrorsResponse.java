@@ -12,14 +12,14 @@ import java.util.Map;
 public class ErrorsResponse {
 
     @JsonAnySetter
-    private Map<Integer, Map<String, String>> errors;
+    private Map<Long, Map<String, String>> errors;
 
     @JsonAnyGetter
-    public Map<Integer, Map<String, String>> getErrors() {
+    public Map<Long, Map<String, String>> getErrors() {
         return errors;
     }
 
-    public void setErrors(Map<Integer, Map<String, String>> errors) {
+    public void setErrors(Map<Long, Map<String, String>> errors) {
         this.errors = errors;
     }
 

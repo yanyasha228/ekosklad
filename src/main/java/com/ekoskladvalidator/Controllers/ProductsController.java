@@ -46,7 +46,7 @@ public class ProductsController {
     public String productsList(Model model,
                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 15) Pageable pageable,
                                @RequestParam Optional<Boolean> validationStatus,
-                               @RequestParam Optional<Integer> groupId,
+                               @RequestParam Optional<Long> groupId,
                                @RequestParam Optional<String> nonFullProductName,
                                @RequestParam Optional<Presence> presence,
                                @RequestParam Optional<String> supplierResourceHost) {
@@ -61,12 +61,12 @@ public class ProductsController {
 
         if (nonFullProductName.isPresent() && isNumber(nonFullProductName.get())) {
             String strNum = nonFullProductName.get().replaceAll(" ", "");
-            Integer id = Integer.parseInt(strNum);
+            Long id = Long.parseLong(strNum);
             nameSpec = new SearchSpecification<>(new SearchCriteria("id", "=", id));
         } else {
             nameSpec = new SearchSpecification<>(new SearchCriteria("name", ":", nonFullProductName.orElse(null)));
         }
-        SearchSpecification<Product> groupSpec = new SearchSpecification<>(new SearchCriteria("group", "=", groupService.findById(groupId.orElse(0)).orElse(null)));
+        SearchSpecification<Product> groupSpec = new SearchSpecification<>(new SearchCriteria("group", "=", groupService.findById(groupId.orElse(0L)).orElse(null)));
         SearchSpecification<Product> availabilitySpec = new SearchSpecification<>(new SearchCriteria("validationStatus", "=", validationStatus.orElse(null)));
         SearchSpecification<Product> reasonSpec = new SearchSpecification<>(new SearchCriteria("presence", "=", presence.orElse(null)));
         SearchSpecification<Product> suppResSpec = new SearchSpecification<>(new SearchCriteria("urlForValidating", ":", supplierResourceHost.orElse(null)));
@@ -75,7 +75,7 @@ public class ProductsController {
 
         model.addAttribute("validationStatus", validationStatus.orElse(null));
 
-        model.addAttribute("groupId", groupId.orElse(0));
+        model.addAttribute("groupId", groupId.orElse(0L));
 
         model.addAttribute("nonFullProductName", nonFullProductName.orElse(""));
 
@@ -97,7 +97,7 @@ public class ProductsController {
     }
 
     private boolean isNumber(String gipNum) {
-        int intValue;
+        long intValue;
 
         String strNum = gipNum.replaceAll(" ", "");
 
@@ -106,7 +106,7 @@ public class ProductsController {
         }
 
         try {
-            intValue = Integer.parseInt(strNum);
+            intValue = Long.parseLong(strNum);
             return true;
         } catch (NumberFormatException e) {
         }

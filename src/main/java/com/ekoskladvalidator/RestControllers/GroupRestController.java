@@ -28,7 +28,7 @@ public class GroupRestController {
     private GroupService groupService;
 
     @PostMapping("add")
-    private void addGroup(@RequestParam Integer id) throws ImpossibleEntitySaveUpdateException {
+    private void addGroup(@RequestParam Long id) throws ImpossibleEntitySaveUpdateException {
 
         Group group = new Group();
         group.setId(id);

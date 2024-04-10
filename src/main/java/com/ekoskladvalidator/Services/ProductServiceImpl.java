@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> findById(int id) {
+    public Optional<Product> findById(long id) {
         return productDao.findById(id);
     }
 
@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Product updateValidationCredentials(Integer productId, String urlForValidation, String cssQueryForValidating, Integer[] keyId, Integer[] productApiId) throws ImpossibleEntitySaveUpdateException {
+    public Product updateValidationCredentials(Long productId, String urlForValidation, String cssQueryForValidating, Long[] keyId, Long[] productApiId) throws ImpossibleEntitySaveUpdateException {
 
         List<ModelIdApiKeyLine> modelIdApiKeyLines = new ArrayList<>();
         Optional<Product> productOpt = productDao.findById(productId);

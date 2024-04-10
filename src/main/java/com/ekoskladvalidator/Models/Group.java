@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Group implements Serializable {
 
     @Id
-    private int id;
+    private long id;
 
     @Column
     private String name;

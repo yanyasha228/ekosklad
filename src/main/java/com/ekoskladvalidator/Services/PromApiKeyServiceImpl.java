@@ -19,7 +19,7 @@ public class PromApiKeyServiceImpl implements PromApiKeyService {
     }
 
     @Override
-    public Optional<PromApiKey> findById(Integer id) {
+    public Optional<PromApiKey> findById(Long id) {
         return promApiKeyDao.findById(id);
     }
 
@@ -44,7 +44,7 @@ public class PromApiKeyServiceImpl implements PromApiKeyService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         promApiKeyDao.deleteById(id);
     }
 

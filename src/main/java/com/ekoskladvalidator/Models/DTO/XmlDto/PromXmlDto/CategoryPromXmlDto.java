@@ -13,11 +13,11 @@ import javax.xml.bind.annotation.*;
 public class CategoryPromXmlDto {
 
     @XmlAttribute(name = "id")
-    private int id;
+    private long id;
 
     @XmlAttribute(name = "parentId")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer parentId;
+    private Long parentId;
 
     @XmlValue
     private String name;

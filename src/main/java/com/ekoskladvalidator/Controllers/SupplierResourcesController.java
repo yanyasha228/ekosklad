@@ -36,7 +36,7 @@ public class SupplierResourcesController {
     }
 
     @GetMapping("{id}/edit")
-    public String resEdit(Model model, @PathVariable Integer id) throws Exception {
+    public String resEdit(Model model, @PathVariable Long id) throws Exception {
         SupplierResource supplierResource = supplierResourceService.findById(id).orElseThrow(() -> new Exception("No resource with such id : " + id));
         model.addAttribute("resource", supplierResource);
 
@@ -44,8 +44,8 @@ public class SupplierResourcesController {
     }
 
     @PostMapping("{id}/edit/submit")
-    public String resEditSubmit(@PathVariable Optional<Integer> id,
-                                @RequestParam Integer[] presenceMatcherId,
+    public String resEditSubmit(@PathVariable Optional<Long> id,
+                                @RequestParam Long[] presenceMatcherId,
                                 @RequestParam Presence[] status,
                                 @RequestParam String[] xPathInput,
                                 @RequestParam String[] inputContainsString,

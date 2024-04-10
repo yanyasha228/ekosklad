@@ -49,7 +49,7 @@ public class ProductMapper {
         return productDto;
     }
 
-    public ProductDto toDto(Product product, Integer customId) {
+    public ProductDto toDto(Product product, Long customId) {
         if (Objects.isNull(product)) return null;
 
         ProductDto productDto = mapper.map(product, ProductDto.class);

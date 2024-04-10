@@ -41,7 +41,7 @@ public class RefactProductModelUtils {
     @Transactional
     public void setEkoskladApiKey() throws ImpossibleEntitySaveUpdateException {
 
-        Optional<PromApiKey> promApiKeyOpt = promApiKeyService.findById(1);
+        Optional<PromApiKey> promApiKeyOpt = promApiKeyService.findById(1L);
         List<Product> productListForSave = new ArrayList<>();
 
         if (promApiKeyOpt.isPresent()) {
@@ -76,7 +76,7 @@ public class RefactProductModelUtils {
     @Transactional
     public void tieRelatedProducts() {
 
-        Optional<PromApiKey> promApiKeyOpt = promApiKeyService.findById(2);
+        Optional<PromApiKey> promApiKeyOpt = promApiKeyService.findById(2L);
 
         List<Product> productList = productService.findAll();
         List<Product> productListForSave = new ArrayList<>();

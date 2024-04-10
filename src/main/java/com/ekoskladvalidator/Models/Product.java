@@ -24,7 +24,7 @@ import java.util.Objects;
 public class Product implements Serializable {
 
     @Id
-    private int id;
+    private long id;
 
     @Column
     private String name;

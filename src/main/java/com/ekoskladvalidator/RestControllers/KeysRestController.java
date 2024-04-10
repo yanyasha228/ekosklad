@@ -18,7 +18,7 @@ public class KeysRestController {
     }
 
     @GetMapping("{id}")
-    public PromApiKey getKey(@PathVariable Integer id) {
+    public PromApiKey getKey(@PathVariable Long id) {
         return promApiKeyService.findById(id).orElse(null);
     }
 
@@ -38,7 +38,7 @@ public class KeysRestController {
     }
 
     @PostMapping("/edit")
-    public void editKey(@RequestParam Integer id, @RequestParam String key, @RequestParam String name) {
+    public void editKey(@RequestParam Long id, @RequestParam String key, @RequestParam String name) {
         if (!Objects.isNull(id) && id != 0) {
             if (!Objects.isNull(name) && !name.isEmpty() && !Objects.isNull(key) && !key.isEmpty()) {
                 Optional<PromApiKey> promApiKeyOptional = promApiKeyService.findById(id);
@@ -56,7 +56,7 @@ public class KeysRestController {
     }
 
     @PostMapping("delete")
-    public void deleteKey(@RequestParam Integer id) {
+    public void deleteKey(@RequestParam Long id) {
         promApiKeyService.delete(id);
     }
 }

@@ -39,7 +39,7 @@ public class SupplierResourceServiceImpl implements SupplierResourceService {
     }
 
     @Override
-    public Optional<SupplierResource> findById(Integer id) {
+    public Optional<SupplierResource> findById(Long id) {
         return supplierResourceDao.findById(id);
     }
 
@@ -76,7 +76,7 @@ public class SupplierResourceServiceImpl implements SupplierResourceService {
 
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         supplierResourceDao.deleteById(id);
     }
 }

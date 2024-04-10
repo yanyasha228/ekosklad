@@ -11,14 +11,14 @@ import java.util.Set;
 @NoArgsConstructor
 public class EditSupplierResource {
 
-    public EditSupplierResource(@NonNull Integer id,
+    public EditSupplierResource(@NonNull Long id,
                                 @NonNull Set<PresenceMatcher> presenceMatchers) {
         this.id = id;
         this.presenceMatchers = presenceMatchers;
     }
 
     @NonNull
-    private Integer id;
+    private Long id;
 
     @NonNull
     private Set<PresenceMatcher> presenceMatchers;

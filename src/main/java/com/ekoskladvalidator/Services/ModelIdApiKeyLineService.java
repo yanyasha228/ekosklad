@@ -10,17 +10,17 @@ import java.util.Optional;
 
 public interface ModelIdApiKeyLineService {
 
-    Optional<ModelIdApiKeyLine> findById(Integer id);
+    Optional<ModelIdApiKeyLine> findById(Long id);
 
-    Optional<ModelIdApiKeyLine> findByProductApiId(Integer id);
+    Optional<ModelIdApiKeyLine> findByProductApiId(Long id);
 
     List<ModelIdApiKeyLine> findAll();
 
     ModelIdApiKeyLine save(ModelIdApiKeyLine modelIdApiKeyLine);
 
-    Optional<ModelIdApiKeyLine> findByProductApiIdAndPromApiKey(Integer productApiId, PromApiKey promApiKey);
+    Optional<ModelIdApiKeyLine> findByProductApiIdAndPromApiKey(Long productApiId, PromApiKey promApiKey);
 
-    Optional<ModelIdApiKeyLine> findByProductIdAndPromApiKey(Integer product, PromApiKey promApiKey);
+    Optional<ModelIdApiKeyLine> findByProductIdAndPromApiKey(Long product, PromApiKey promApiKey);
 
     Page<ModelIdApiKeyLine> findAll(Pageable pageable);
 

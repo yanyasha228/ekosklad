@@ -15,7 +15,7 @@ public class PromApiKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @NotNull
     @Column(name = "api_key")

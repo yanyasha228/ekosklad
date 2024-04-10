@@ -28,19 +28,19 @@ public class ProductRestServiceImpl implements ProductRestService {
     }
 
     @Override
-    public Optional<Product> getProductById(int id) {
+    public Optional<Product> getProductById(long id) {
         Product product = productMapper.toEntity(productRestDao.getProductById(id).orElse(null));
         return Optional.ofNullable(product);
     }
 
     @Override
-    public Optional<Product> getProductByIdAndApiToken(int id, PromApiKey promApiKey) {
+    public Optional<Product> getProductByIdAndApiToken(long id, PromApiKey promApiKey) {
         Product product = productMapper.toEntity(productRestDao.getProductByIdAndApiToken(id, promApiKey).orElse(null));
         return Optional.ofNullable(product);
     }
 
     @Override
-    public Optional<Product> getProductByExternalIdAndApiToken(int external_id, PromApiKey promApiKey) {
+    public Optional<Product> getProductByExternalIdAndApiToken(long external_id, PromApiKey promApiKey) {
 
         Product product = productMapper.toEntity(productRestDao.getProductByExternalIdAndApiToken(external_id, promApiKey).orElse(null));
 
@@ -100,7 +100,7 @@ public class ProductRestServiceImpl implements ProductRestService {
     }
 
     @Override
-    public List<Product> getProductsByGroupId(int id) {
+    public List<Product> getProductsByGroupId(long id) {
         return productRestDao.
                 getProductsByGroupId(id).stream().
                 map(productDto -> productMapper.toEntity(productDto)).collect(Collectors.toList());

@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface ProductRestService {
 
-    Optional<Product> getProductById(int id);
+    Optional<Product> getProductById(long id);
 
-    Optional<Product> getProductByIdAndApiToken(int id, PromApiKey promApiKey);
+    Optional<Product> getProductByIdAndApiToken(long id, PromApiKey promApiKey);
 
     List<Product> getAll() throws InterruptedException;
 
@@ -19,11 +19,11 @@ public interface ProductRestService {
 
     Optional<Product> getProduct(Product product);
 
-    List<Product> getProductsByGroupId(int id);
+    List<Product> getProductsByGroupId(long id);
 
     List<Product> postProducts(List<Product> productList) throws InterruptedException;
 
-    Optional<Product> getProductByExternalIdAndApiToken(int external_id, PromApiKey promApiKey);
+    Optional<Product> getProductByExternalIdAndApiToken(long external_id, PromApiKey promApiKey);
 
 
 }

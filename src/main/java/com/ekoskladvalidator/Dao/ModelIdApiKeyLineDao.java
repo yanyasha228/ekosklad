@@ -8,12 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ModelIdApiKeyLineDao extends JpaRepository<ModelIdApiKeyLine, Integer> {
-    Optional<ModelIdApiKeyLine> findByProductApiId(Integer productApiId);
+public interface ModelIdApiKeyLineDao extends JpaRepository<ModelIdApiKeyLine, Long> {
+    Optional<ModelIdApiKeyLine> findByProductApiId(Long productApiId);
 
-    Optional<ModelIdApiKeyLine> findByProductApiIdAndPromApiKey(Integer productApiId, PromApiKey promApiKey);
+    Optional<ModelIdApiKeyLine> findByProductApiIdAndPromApiKey(Long productApiId, PromApiKey promApiKey);
 
-    Optional<ModelIdApiKeyLine> findByProductIdAndPromApiKey(Integer product, PromApiKey promApiKey);
+    Optional<ModelIdApiKeyLine> findByProductIdAndPromApiKey(Long product, PromApiKey promApiKey);
 
     Page<ModelIdApiKeyLine> findAll(Pageable pageable);
 }

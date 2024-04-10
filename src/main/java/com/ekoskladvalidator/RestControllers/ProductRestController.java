@@ -35,7 +35,7 @@ public class ProductRestController {
 
     @PostMapping("add")
     @Transactional
-    public void addProduct(@RequestParam Integer id, @RequestParam Integer keyId) throws ImpossibleEntitySaveUpdateException {
+    public void addProduct(@RequestParam Long id, @RequestParam Long keyId) throws ImpossibleEntitySaveUpdateException {
 
         if (Objects.nonNull(id) && id > 0 && Objects.nonNull(keyId) && keyId > 0) {
             if (!productService.findById(id).isPresent()) {
@@ -81,7 +81,7 @@ public class ProductRestController {
 
 
     @GetMapping(value = "/{id}")
-    public Product getProductById(@PathVariable Integer id) {
+    public Product getProductById(@PathVariable Long id) {
 
         return productService.findById(id).orElse(null);
     }

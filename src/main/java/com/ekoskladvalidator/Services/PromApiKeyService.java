@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PromApiKeyService {
 
-    Optional<PromApiKey> findById(Integer id);
+    Optional<PromApiKey> findById(Long id);
 
     List<PromApiKey> findAll();
 
@@ -19,7 +19,7 @@ public interface PromApiKeyService {
 
     Optional<PromApiKey> findByShopName(String name);
 
-    void delete(Integer id);
+    void delete(Long id);
 
     Page<PromApiKey> findAll(Pageable pageable);
 

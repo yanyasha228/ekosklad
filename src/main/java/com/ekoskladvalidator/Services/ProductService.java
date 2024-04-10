@@ -20,16 +20,16 @@ public interface ProductService {
 
     List<Product> findAll();
 
-    Optional<Product> findById(int id);
+    Optional<Product> findById(long id);
 
     Optional<Product> findProductByName(String name);
 
 
-    Product updateValidationCredentials(Integer productId,
+    Product updateValidationCredentials(Long productId,
                                         String urlForValidation,
                                         String cssQueryForValidating,
-                                        Integer[] keyId,
-                                        Integer[] productApiId) throws ImpossibleEntitySaveUpdateException;
+                                        Long[] keyId,
+                                        Long[] productApiId) throws ImpossibleEntitySaveUpdateException;
 
     List<Product> findProductByNonFullProductNameRegardlessOfTheWordsOrder(String nonFullProductName);
 

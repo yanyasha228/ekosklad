@@ -29,7 +29,7 @@ public class ModelIdApiKeyLine {
 
     @NotNull
     @Column(name = "product_api_id")
-    private Integer productApiId;
+    private Long productApiId;
 
 
     @Override
