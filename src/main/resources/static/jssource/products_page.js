@@ -4,12 +4,48 @@ $(function () {
     });
 
 
+    $(document).on('show.bs.modal', '#deleteProductModal', function (event) {
+
+        var referrerButton = $(event.relatedTarget); // Button that triggered the modal
+
+        var suppProvId = referrerButton.data('product-id');
+        var suppProvName = referrerButton.data('product-name');// Extract productId from data-* attributes
+
+
+        var modal = $(this);
+        modal.find('#deleteProductLabel').text(suppProvName);
+        modal.find('#deleteProductButton').attr('data-product-id', suppProvId)
+
+    });
+
+    $(document).on('click', '#deleteProductButton', function (ev) {
+
+        var prodId = $(this).data('product-id');
+        var dFs = {
+            id: prodId
+        };
+
+        $.ajax({
+            url: location.origin + "/rest/products/delete",
+            dataType: 'json',
+            type: 'POST',
+            data: dFs
+        }).done(function (d) {
+            $('#deleteProductModal').modal('hide');
+            location.reload();
+        }).fail(function () {
+            $('#deleteProductModal').modal('hide');
+            location.reload();
+        });
+
+    });
+
 
     $(document).on('click', '#addGroupLink', function (ev) {
 
         var groupId = $('#inputGroupId').val();
-        var dFs= {
-            id : groupId
+        var dFs = {
+            id: groupId
         };
 
         $.ajax({
@@ -31,14 +67,13 @@ $(function () {
     });
 
 
-
     $(document).on('click', '#addProductLink', function (ev) {
 
         var productId = $('#inputId').val();
         var keyIdPR = $('#selectKeyModal').val();
-        var dFs= {
-            id : productId ,
-            keyId : keyIdPR
+        var dFs = {
+            id: productId,
+            keyId: keyIdPR
         };
 
         $.ajax({
@@ -70,7 +105,7 @@ $(function () {
 
     $(document).on('click', '#orderLineItem', function (e) {
 
-        var prodEditLink = location.origin +"/products/" + $(this).data('prodid') + "/edit";
+        var prodEditLink = location.origin + "/products/" + $(this).data('prodid') + "/edit";
         window.open(prodEditLink, "_top");
 
     });
@@ -87,7 +122,7 @@ $(function () {
         if (e.keyCode == 13) {
             e.preventDefault();
             var activeItem = searchList.children('.active:first');
-            if(activeItem.length <= 0) {
+            if (activeItem.length <= 0) {
 
                 $('#searchInputForm').submit();
                 return;
@@ -109,12 +144,12 @@ $(function () {
                 $.getJSON(location.origin + "/rest/products/?nonFullProductName=" + searchField, function (data) {
                     $.each(data, function (key, value) {
                         var prodStatus = "text-danger";
-                        if(value.validationStatus === true) prodStatus="test-success";
+                        if (value.validationStatus === true) prodStatus = "test-success";
 
                         searchList.append('<li class="list-group-item product-search-editor-res-item" tabindex ="' + key + '" id="orderLineItem" data-prodid = "' + value.id + '"><div class="row"' +
                             '><div class="col-4"><img src="' + value.main_image + '" height="60" width="80" class="img-thumbnail"></div>' +
                             '<div class="col-1"><span class="status ' + prodStatus +
-                            '">&bull;</span></div>'+
+                            '">&bull;</span></div>' +
                             '<div class="col-7"> <p id="prodNamePar" style="overflow: hidden; text-overflow: ellipsis;">' + value.name + '</p> </div>' +
                             '</div></li>');
 

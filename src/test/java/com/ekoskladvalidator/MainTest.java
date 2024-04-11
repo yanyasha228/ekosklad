@@ -2,6 +2,9 @@ package com.ekoskladvalidator;
 
 import com.ekoskladvalidator.CustomExceptions.NoSupplierResourceException;
 import com.ekoskladvalidator.CustomExceptions.NotValidQueryException;
+import com.ekoskladvalidator.ExProductCheck.ExProductCheckService;
+import com.ekoskladvalidator.ExProductCheck.ExcelWriter;
+import com.ekoskladvalidator.ExProductCheck.ProductCheck;
 import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Models.SupplierResource;
@@ -24,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,32 +36,26 @@ import java.util.Set;
 public class MainTest {
 
     @Autowired
-    private ProductService productService;
+    private ExProductCheckService exProductCheckService;
 
     @Autowired
-    private ProductValidator productValidator;
+    private ExcelWriter excelWriter;
+
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private DocQueryParser docQueryParser;
 
     @Autowired
-    private ProductRestDao productRestDao;
-
-    @Autowired
-    private ProductRestService productRestService;
-
-    @Autowired
     private SupplierResourceService supplierResourceService;
 
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ProductMapper productMapper;
-
-    @Value("${rest.prom.api.token}")
-    private String apiToken;
+    @Test
+    public void check() throws IOException {
+        List<ProductCheck> productChecks = exProductCheckService.checkProducts();
+        excelWriter.writeToExcel(productChecks,"/home/ynddw/ekosklad/src/main/resources/dbscripts/checkProducts.xlsx");
+    }
 
     @Test
     public void test() throws URISyntaxException, IOException, NoSupplierResourceException, NotValidQueryException {
@@ -81,14 +79,16 @@ public class MainTest {
 //        Product product = productService.findById(1543444012).get();
 ////        Product product = productService.findById(1106697088).get();
 ////        Product product = productService.findById(1106697088).get();
-        Document document = docQueryParser.getDocument("https://aquapolis.ua/dozirujuschij-nasos-aquaviva-universalnyj-5-l-ch-aml200npe0009-s-ruchn-regulir.html").get();
+        Document document = docQueryParser.getDocument("https://aquapolis.ua/flanec-svobodnyj-pvh-effast.html").get();
 //        SupplierResource supplierResource = supplierResourceService.findByHostUrl(new URL(product.getUrlForValidating()).getHost())
 //                .orElseThrow(() -> new NoSupplierResourceException("No supplierResource for such host: " + product.getUrlForValidating()));
 //        Set<PresenceMatcher> presenceMatcherSet = supplierResource.getPresenceMatchers();
 
 //        for (PresenceMatcher presenceMatcher : presenceMatcherSet) {
 //        }
-        Optional<String> value = docQueryParser.getFirstElementValue(document, "#product-price-3948 > span");
+        Optional<String> value = docQueryParser.getFirstElementValue(document, "div.stock.available > span");
+
+//        boolean dk = value.get().contains("Готов к отправке");
         int i = 0;
     }
 

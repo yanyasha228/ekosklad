@@ -51,6 +51,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void deleteById(Long id) {
+        productDao.deleteById(id);
+    }
+
+    @Override
     public List<Product> save(List<Product> productList) {
 
         List<Product> productListForSave = productList.stream().filter(product -> {

@@ -16,6 +16,8 @@ public interface ProductService {
 
     Product save(Product product) throws ImpossibleEntitySaveUpdateException;
 
+    void deleteById(Long id);
+
     List<Product> save(List<Product> productList);
 
     List<Product> findAll();

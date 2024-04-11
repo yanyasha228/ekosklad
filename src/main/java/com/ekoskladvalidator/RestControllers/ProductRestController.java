@@ -86,4 +86,10 @@ public class ProductRestController {
         return productService.findById(id).orElse(null);
     }
 
+    @PostMapping(value = "delete")
+    public void deleteProductById(@RequestParam Long id) {
+        productService.deleteById(id);
+        int i = 0;
+    }
+
 }

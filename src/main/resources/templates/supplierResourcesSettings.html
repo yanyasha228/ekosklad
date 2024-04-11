@@ -147,23 +147,23 @@
 
                 <ul class="pagination">
                     <li class="page-item"><a
-                            th:href="@{/settings/keys(size=${resPage.getSize()})}"
+                            th:href="@{/settings/supp_res(size=${resPage.getSize()})}"
                             class="page-link"> << </a></li>
                     <li class="page-item"><a
-                            th:href="@{/settings/keys(page = ${resPage.getNumber()-1},
+                            th:href="@{/settings/supp_res(page = ${resPage.getNumber()-1},
                     size=${resPage.getSize()})}"
                             th:if="${resPage.getNumber() > 0}"
                             class="page-link"> < </a></li>
                     <li class="page-item active"><a class="page-link"
                                                     th:text="${resPage.getNumber()}"></a></li>
                     <li class="page-item"><a
-                            th:href="@{/settings/keys(page = ${resPage.getNumber()+1},
+                            th:href="@{/settings/supp_res(page = ${resPage.getNumber()+1},
                     size=${resPage.getSize()})}"
                             th:if="${(resPage.getNumber() + 1) < resPage.getTotalPages()}"
                             class="page-link"> > </a></li>
 
                     <li class="page-item"><a
-                            th:href="@{/settings/keys(page = ${resPage.getTotalPages()-1},
+                            th:href="@{/settings/supp_res(page = ${resPage.getTotalPages()-1},
                     size=${resPage.getSize()})}"
                             class="page-link"> >> </a></li>
                 </ul>
