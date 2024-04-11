@@ -13,7 +13,7 @@ $(function () {
 
 
         var modal = $(this);
-        modal.find('#deleteProductLabel').text(suppProvName);
+        modal.find('#deleteProductModalLabel').text(suppProvName);
         modal.find('#deleteProductButton').attr('data-product-id', suppProvId)
 
     });
