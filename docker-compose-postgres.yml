@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ekosklad_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Ekoworker_228_777_VAL
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - /home/ynddw/ekoskladback:/backup
+
+volumes:
+  postgres-data:
