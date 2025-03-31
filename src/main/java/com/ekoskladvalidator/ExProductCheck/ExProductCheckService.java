@@ -45,7 +45,7 @@ public class ExProductCheckService {
                 restTemplate.getForEntity(product.getUrlForValidating(), String.class);
                 log.error("_____________________________________________VALID");
             } catch (Exception e) {
-                productChecks.add(new ProductCheck(product, HttpStatus.NOT_FOUND,e.getMessage()));
+                productChecks.add(new ProductCheck(product, HttpStatus.NOT_FOUND, e.getMessage()));
                 log.error("NOT_VALID_____________________________________________");
             } finally {
                 log.error(size + "|" + counter.incrementAndGet()); // Увеличиваем счетчик после каждой итерации

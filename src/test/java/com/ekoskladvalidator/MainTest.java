@@ -15,6 +15,7 @@ import com.ekoskladvalidator.RestServices.ProductRestService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.SupplierResourceService;
 import com.ekoskladvalidator.Validators.ProductValidator;
+import com.ekoskladvalidator.out.EmailService;
 import org.jsoup.nodes.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -50,11 +52,19 @@ public class MainTest {
     @Autowired
     private SupplierResourceService supplierResourceService;
 
+    @Autowired
+    private EmailService emailService;
 
     @Test
-    public void check() throws IOException {
-        List<ProductCheck> productChecks = exProductCheckService.checkProducts();
-        excelWriter.writeToExcel(productChecks,"/home/ynddw/ekosklad/src/main/resources/dbscripts/checkProducts.xlsx");
+    public void check() throws IOException, MessagingException {
+//        List<ProductCheck> productChecks = exProductCheckService.checkProducts();
+//        excelWriter.writeToExcel(productChecks,"/home/ynddw/ekosklad/src/main/resources/dbscripts/checkProducts.xlsx");
+        emailService.sendEmailWithAttachment(
+                "ynddw.ynddw@gmail.com",
+                "Vaidation Analisys",
+                "",
+                "/home/ynddw/ekosklad/src/main/resources/dbscripts/checkProducts.xlsx");
+int i =0;
     }
 
     @Test
