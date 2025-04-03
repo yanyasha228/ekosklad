@@ -7,7 +7,8 @@
     <link rel="stylesheet" th:href="@{/csssource/item_list_stylesheet.css}">
     <script th:src="@{/jssource/utils.js}"></script>
     <script th:src="@{/jssource/product_edit.js}"></script>
-    <script type="text/javascript" th:src="@{/jssource/supplies_create.js}"></script>
+    <!--    <script type="text/javascript" th:src="@{/jssource/supplies_create.js}"></script>-->
+    <script th:src="@{/jssource/supplier_res.js}"></script>
 
 </head>
 <body>
@@ -17,40 +18,51 @@
     #productLines {
         padding-left: 70px;
     }
+    .rounded-img {
+        border-radius: 50%; /* Делает изображение круглым */
+        object-fit: cover;  /* Чтобы изображение не искажалось */
+    }
 </style>
-<div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+<!--<div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">-->
 
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img class="d-block w-100" th:src="${product.main_image}">
-        </div>
-    </div>
+<!--    <div class="carousel-inner">-->
+<!--        <div class="carousel-item active">-->
+<!--            <img class="d-block w-100" th:src="${product.main_image}">-->
+<!--        </div>-->
+<!--    </div>-->
 
-</div>
+<!--</div>-->
 
 <div class="table-wrapper">
     <div class="table-title">
         <div class="row">
-            <div class="col-sm-8">
-                <div class="row-sm-4">
-                    <h2>ID: <b th:text="${product.getId()}"></b></h2>
-                </div>
-                <div class="row-sm-4">
-                    <h2>Валюта: <b th:text="${product.getCurrency()}"></b></h2>
-                </div>
-                <div class="row-sm-4">
-                    <h2>Название: <b th:text="${product.getName()}"></b></h2>
-                </div>
+            <div class="col-sm-1">
+                <img class="d-block w-100" th:src="${product.main_image}">
             </div>
-            <div class="col-sm-4">
-                <a target="_blank" th:href="@{https://my.prom.ua/cms/product/edit/{id}(id=${product.getId()})}"
-                   class="btn"><i class="material-icons">visibility</i>
-                    <span>Prom.ua</span></a>
-                <button id="checkValid" th:data-prod-id="${product.getId()}" class="btn btn-add"><i
-                        class="material-icons">&#xe147;</i>
-                    <span>Проверить</span></button>
-                <h2 id="validPriceH"><b id="validPrice"></b></h2>
+            <div class="col-sm-11">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="row-sm-4">
+                            <h2>ID: <b th:text="${product.getId()}"></b></h2>
+                        </div>
+                        <div class="row-sm-4">
+                            <h2>Валюта: <b th:text="${product.getCurrency()}"></b></h2>
+                        </div>
+                        <div class="row-sm-4">
+                            <h2>Название: <b th:text="${product.getName()}"></b></h2>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <a target="_blank" th:href="@{https://my.prom.ua/cms/product/edit/{id}(id=${product.getId()})}"
+                           class="btn"><i class="material-icons">visibility</i>
+                            <span>Prom.ua</span></a>
+                        <button id="checkValid" th:data-prod-id="${product.getId()}" class="btn btn-add"><i
+                                class="material-icons">&#xe147;</i>
+                            <span>Проверить</span></button>
+                        <h2 id="validPriceH"><b id="validPrice"></b></h2>
 
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -106,6 +118,125 @@
 
 
                             </div>
+
+
+                            <label for="presenceMatcher">Альтернативный статус наличия:</label>
+                            <div class="controls-1">
+
+                                <div id="presenceMatcher" class="entry"
+                                     th:each="presenceMatcher : ${product.getAlternativePresenceMatchers()}">
+                                    <div class="form-row">
+
+                                        <div class="form-group col-md-2">
+                                            <input hidden
+                                                   type="number"
+                                                   class="form-control"
+                                                   id="presenceMatcherId"
+                                                   name="presenceMatcherId"
+                                                   th:value="${presenceMatcher.getId()}">
+                                            <label for="selectStatus">Статус</label>
+                                            <select id="selectStatus" name="status" class="form-control">
+                                                <option th:each="statusIter : ${T(com.ekoskladvalidator.Models.Enums.Presence).values()}"
+                                                        th:value="${statusIter.name()}"
+                                                        th:text="${statusIter.getAlias()}"
+                                                        th:selected="${statusIter == presenceMatcher.getPresence()}">
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-1" id="inputQueryTypeInputDiv">
+                                            <label for="selectQueryType">Тип</label>
+                                            <select id="selectQueryType" name="queryType" class="form-control">
+                                                <option th:each="typeIter : ${T(com.ekoskladvalidator.Models.Enums.QueryType).values()}"
+                                                        th:value="${typeIter.name()}"
+                                                        th:text="${typeIter.getAlias()}"
+                                                        th:selected="${typeIter == presenceMatcher.getQueryType()}">
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-6" id="inputXPathInputDiv">
+                                            <label for="inputContainsString">Путь(XPath)</label>
+                                            <input class="form-control is-valid"
+                                                   id="xPathInput" type="text"
+                                                   name="xPathInput"
+                                                   th:value="${presenceMatcher.getPresencePathQuery()}"/>
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            <label for="inputContainsString">Содержит</label>
+                                            <input class="form-control is-valid"
+                                                   name="inputContainsString"
+                                                   th:value="${presenceMatcher.getContainString()}"
+                                                   id="inputContainsString" type="text"/>
+                                        </div>
+
+                                        <div class="form-group col-md-1">
+                                                            <span class="input-group-btn">
+                                                            <button class="btn btn-success btn-add" type="button">
+                                                                <span class="glyphicon glyphicon-plus"></span>
+                                                            </button>
+                                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="presenceMatcher" class="entry"
+                                     th:if="${product.getAlternativePresenceMatchers().size() == 0}">
+                                    <div class="form-row">
+
+                                        <div class="form-group col-md-2">
+                                            <input hidden
+                                                   type="number"
+                                                   class="form-control"
+                                                   id="presenceMatcherId"
+                                                   name="presenceMatcherId"
+                                                   th:value="${0}">
+                                            <label for="selectStatus">Статус</label>
+                                            <select id="selectStatus" name="status" class="form-control">
+                                                <option th:each="statusIter : ${T(com.ekoskladvalidator.Models.Enums.Presence).values()}"
+                                                        th:value="${statusIter.name()}"
+                                                        th:text="${statusIter.getAlias()}">
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-1" id="inputQueryTypeInputDiv">
+                                            <label for="selectQueryType">Тип</label>
+                                            <select id="selectQueryType" name="queryType" class="form-control">
+                                                <option th:each="typeIter : ${T(com.ekoskladvalidator.Models.Enums.QueryType).values()}"
+                                                        th:value="${typeIter.name()}"
+                                                        th:text="${typeIter.getAlias()}">
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-6" id=" inputXPathInputDiv">
+                                            <label for="selectStatus">Путь(XPath)</label>
+                                            <input class="form-control is-invalid"
+                                                   id="xPathInput" type="text"
+                                                   name="xPathInput"/>
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            <label for="inputContainsString">Содержит</label>
+                                            <input class="form-control is-invalid"
+                                                   name="inputContainsString"
+                                                   id="inputContainsString" type="text"/>
+                                        </div>
+
+                                        <div class="form-group col-md-1">
+                                                            <span class="input-group-btn">
+                                                            <button class="btn btn-success btn-add" type="button">
+                                                                <span class="glyphicon glyphicon-plus"></span>
+                                                            </button>
+                                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
                             <div class="row">
 
                                 <div class="form-group col-md-12">

@@ -13,9 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -70,6 +68,10 @@ public class Product implements Serializable {
     @Column(name = "url_for_validating_exist")
     @Type(type = "true_false")
     private boolean dataForValidatingExist;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<PresenceMatcher> alternativePresenceMatchers = new HashSet<>();
 
     @PreUpdate
     @PrePersist

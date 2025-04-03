@@ -25,6 +25,7 @@ public class ProductMapper {
         Product oldProduct = productService.findById(productDto.getId()).orElse(null);
         if (oldProduct != null) {
             product.setModelIdApiKeyLines(oldProduct.getModelIdApiKeyLines());
+            product.setAlternativePresenceMatchers(oldProduct.getAlternativePresenceMatchers());
             product.setLastValidationDate(oldProduct.getLastValidationDate());
             product.setUrlForValidating(oldProduct.getUrlForValidating());
             product.setCssQueryForValidating(oldProduct.getCssQueryForValidating());

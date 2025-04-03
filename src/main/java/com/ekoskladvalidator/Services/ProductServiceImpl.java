@@ -2,12 +2,10 @@ package com.ekoskladvalidator.Services;
 
 import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
 import com.ekoskladvalidator.Dao.ModelIdApiKeyLineDao;
+import com.ekoskladvalidator.Dao.PresenceMatcherDao;
 import com.ekoskladvalidator.Dao.ProductDao;
 import com.ekoskladvalidator.Dao.PromApiKeyDao;
-import com.ekoskladvalidator.Models.Group;
-import com.ekoskladvalidator.Models.ModelIdApiKeyLine;
-import com.ekoskladvalidator.Models.Product;
-import com.ekoskladvalidator.Models.PromApiKey;
+import com.ekoskladvalidator.Models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,10 +31,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ModelIdApiKeyLineDao modelIdApiKeyLineDao;
 
-    public ProductServiceImpl(ProductDao productDao, PromApiKeyDao promApiKeyDao, ModelIdApiKeyLineDao modelIdApiKeyLineDao) {
+    private final PresenceMatcherDao presenceMatcherDao;
+
+    public ProductServiceImpl(ProductDao productDao, PromApiKeyDao promApiKeyDao, ModelIdApiKeyLineDao modelIdApiKeyLineDao, PresenceMatcherDao presenceMatcherDao) {
         this.productDao = productDao;
         this.promApiKeyDao = promApiKeyDao;
         this.modelIdApiKeyLineDao = modelIdApiKeyLineDao;
+        this.presenceMatcherDao = presenceMatcherDao;
     }
 
     @Override
@@ -86,9 +88,9 @@ public class ProductServiceImpl implements ProductService {
         return productDao.findProductByName(name);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Product updateValidationCredentials(Long productId, String urlForValidation, String cssQueryForValidating, Long[] keyId, Long[] productApiId) throws ImpossibleEntitySaveUpdateException {
+    public Product updateValidationCredentials(Long productId, String urlForValidation, String cssQueryForValidating, Long[] keyId, Long[] productApiId, List<PresenceMatcher> presenceMatchers) throws ImpossibleEntitySaveUpdateException {
 
         List<ModelIdApiKeyLine> modelIdApiKeyLines = new ArrayList<>();
         Optional<Product> productOpt = productDao.findById(productId);
@@ -118,6 +120,18 @@ public class ProductServiceImpl implements ProductService {
             product.getModelIdApiKeyLines().clear();
 
             product.getModelIdApiKeyLines().addAll(modelIdApiKeyLinesPers);
+
+            presenceMatchers.forEach(presenceMatcher -> {
+                presenceMatcher.setProduct(product);
+            });
+
+            List<PresenceMatcher> presenceMatchersTP = presenceMatcherDao.saveAll(presenceMatchers);
+
+//            presenceMatcherDao.deleteAll(product.getAlternativePresenceMatchers());
+
+            product.getAlternativePresenceMatchers().clear();
+
+            product.getAlternativePresenceMatchers().addAll(presenceMatchersTP);
 
             product.setUrlForValidating(urlForValidation);
 

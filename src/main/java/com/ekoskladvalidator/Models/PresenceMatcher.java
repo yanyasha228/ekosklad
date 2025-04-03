@@ -32,6 +32,10 @@ public class PresenceMatcher {
     @Enumerated(EnumType.STRING)
     private Presence presence;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     @Column(name = "presence_css_query")
     private String presencePathQuery;
 

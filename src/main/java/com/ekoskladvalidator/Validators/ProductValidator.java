@@ -62,7 +62,7 @@ public class ProductValidator {
     }
 
 
-//    @Scheduled(fixedDelay = 24000000)
+    @Scheduled(fixedDelay = 24000000)
     public void validateProducts() throws InterruptedException {
 
         List<Product> syncProductList = dbRestSynchronizer.synchronizeDbProductsWithRestApiModels();
@@ -188,7 +188,12 @@ public class ProductValidator {
 
         List<PresenceMatcher> presenceMatchersList = new ArrayList<>();
 
-        Set<PresenceMatcher> presenceMatcherSet = supplierResource.getPresenceMatchers();
+        Set<PresenceMatcher> presenceMatcherSet;
+        if (product.getAlternativePresenceMatchers().size() > 0) {
+            presenceMatcherSet = product.getAlternativePresenceMatchers();
+        } else {
+            presenceMatcherSet = supplierResource.getPresenceMatchers();
+        }
 
         for (PresenceMatcher presenceMatcher : presenceMatcherSet) {
 
@@ -212,10 +217,9 @@ public class ProductValidator {
         } else if (presenceMatchersList.size() > 1) {
             Presence presence = presenceMatchersList.get(0).getPresence();
             boolean allMatch = presenceMatchersList.stream().allMatch(presenceMatcher -> presenceMatcher.getPresence().equals(presence));
-            if(allMatch){
+            if (allMatch) {
                 return presence;
-            }
-            else throw new MoreThenOneMatchingException("More then one status matching prodID: " + product.getId());
+            } else throw new MoreThenOneMatchingException("More then one status matching prodID: " + product.getId());
         } else throw new NoMatchingException("Have no one status matching prodID: " + product.getId());
 
     }

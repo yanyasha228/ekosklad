@@ -3,6 +3,7 @@ package com.ekoskladvalidator.Services;
 
 import com.ekoskladvalidator.CustomExceptions.ImpossibleEntitySaveUpdateException;
 import com.ekoskladvalidator.Models.Group;
+import com.ekoskladvalidator.Models.PresenceMatcher;
 import com.ekoskladvalidator.Models.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 public interface ProductService {
@@ -31,7 +33,8 @@ public interface ProductService {
                                         String urlForValidation,
                                         String cssQueryForValidating,
                                         Long[] keyId,
-                                        Long[] productApiId) throws ImpossibleEntitySaveUpdateException;
+                                        Long[] productApiId,
+                                        List<PresenceMatcher> presenceMatcherSet) throws ImpossibleEntitySaveUpdateException;
 
     List<Product> findProductByNonFullProductNameRegardlessOfTheWordsOrder(String nonFullProductName);
 
