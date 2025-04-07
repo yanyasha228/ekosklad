@@ -19,6 +19,9 @@ public final class ProductCheckValidator {
     @Value("${eko.techMail}")
     private String techMail;
 
+    @Value("${eko.report}")
+    private String filePath;
+
     private final EmailService emailService;
 
     private final ExProductCheckService exProductCheckService;
@@ -34,7 +37,6 @@ public final class ProductCheckValidator {
 
     @Scheduled(cron = "0 0 4 * * *", zone = "Europe/Moscow")
     public void genereateReport() throws IOException, MessagingException {
-        String filePath = "/src/main/resources/reports/checkProducts.xlsx";
         LocalDate today = LocalDate.now();
         List<ProductCheck> productChecks = exProductCheckService.checkProducts();
         excelWriter.writeToExcel(productChecks, filePath);
