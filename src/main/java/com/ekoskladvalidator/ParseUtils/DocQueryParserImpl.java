@@ -38,16 +38,36 @@ public class DocQueryParserImpl implements DocQueryParser {
 
         Document doc = null;
 ///Have to change in-block try-catch to Spring @Retry
+
+
         try {
-            doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true).get();
+            doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true)
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                            "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                            "Chrome/113.0.0.0 Safari/537.36")
+                    .header("Accept-Language", "ru-RU,ru;q=0.9,en;q=0.8")
+                    .header("Accept", "text/html")
+                    .get();
         } catch (SocketTimeoutException socketTimeoutException) {
             log.error("Timeout socket try again FIRST ATTEMPT");
             try {
-                doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true).get();
+                doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true)
+                        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                                "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                                "Chrome/113.0.0.0 Safari/537.36")
+                        .header("Accept-Language", "ru-RU,ru;q=0.9,en;q=0.8")
+                        .header("Accept", "text/html")
+                        .get();
             } catch (SocketTimeoutException sE) {
                 log.error("Timeout socket try again SECOND ATTEMPT");
                 try {
-                    doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true).get();
+                    doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true)
+                            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                                    "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                                    "Chrome/113.0.0.0 Safari/537.36")
+                            .header("Accept-Language", "ru-RU,ru;q=0.9,en;q=0.8")
+                            .header("Accept", "text/html")
+                            .get();
                 } catch (SocketTimeoutException sE2) {
                     return Optional.empty();
                 }
