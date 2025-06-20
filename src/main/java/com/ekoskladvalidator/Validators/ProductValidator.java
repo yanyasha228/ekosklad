@@ -91,6 +91,7 @@ public class ProductValidator {
         List<Product> productListForValidation = productService.findAll().stream().
                 filter(Product::isDataForValidatingExist).
                 filter(product -> !product.getUrlForValidating().contains("aquapolis.ua")).
+                filter(product -> !product.getUrlForValidating().contains("poolsmarket.com.ua")).
                 filter(product -> {
                     for (Product syncProduct : syncProductList) {
                         if (syncProduct.getId() == product.getId()) return true;
