@@ -92,6 +92,7 @@ public class ProductValidator {
                 filter(Product::isDataForValidatingExist).
                 filter(product -> !product.getUrlForValidating().contains("aquapolis.ua")).
                 filter(product -> !product.getUrlForValidating().contains("poolsmarket.com.ua")).
+                filter(product -> !product.getName().contains("Kratki")).
                 filter(product -> {
                     for (Product syncProduct : syncProductList) {
                         if (syncProduct.getId() == product.getId()) return true;
