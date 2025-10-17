@@ -68,7 +68,7 @@ public class DocQueryParserImpl implements DocQueryParser {
     private Document fetch(String url, Proxy proxy) throws IOException {
         var connection = Jsoup.connect(url)
                 .timeout(30000)
-                .ignoreHttpErrors(true)
+                .ignoreHttpErrors(false)
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
                         "AppleWebKit/537.36 (KHTML, like Gecko) " +
                         "Chrome/113.0.0.0 Safari/537.36")
