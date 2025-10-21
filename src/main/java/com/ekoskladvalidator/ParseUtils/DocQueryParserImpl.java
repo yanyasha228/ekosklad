@@ -130,18 +130,19 @@ public class DocQueryParserImpl implements DocQueryParser {
     @Override
     public String getText(String url, String cssQuery) throws IOException {
 
-        Document doc;
+        Optional<Document> doc;
 
         try {
-            doc = Jsoup.connect(url).timeout(30000).ignoreHttpErrors(true).get();
-        } catch (MalformedInputException e) {
+            doc = getDocument(url);
+        } catch (Exception e) {
             return "null";
         }
 
-        Elements ells = doc.select(cssQuery);
-        Element ell = ells.first();
-
-        if (ell != null) return ell.text();
+        if (doc.isPresent()) {
+            Elements ells = doc.get().select(cssQuery);
+            Element ell = ells.first();
+            if (ell != null) return ell.text();
+        }
 
         return "null";
     }

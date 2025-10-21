@@ -1,8 +1,13 @@
 package com.ekoskladvalidator.ExProductCheck;
 
+import com.ekoskladvalidator.CustomExceptions.NoDocumentException;
 import com.ekoskladvalidator.Models.Product;
+import com.ekoskladvalidator.ParseUtils.DocQueryParser;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.ProductServiceImpl;
+import com.ekoskladvalidator.Validators.ProductValidator;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +19,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -27,7 +34,13 @@ public class ExProductCheckService {
     @Autowired
     private ProductService productService;
 
+    private static Logger logger = LoggerFactory.getLogger(ProductValidator.class);
+
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
+
+    @Autowired
+    private DocQueryParser docQueryParser;
+
 
     private static final Logger log = LoggerFactory.getLogger(ExProductCheckService.class);
 
@@ -37,47 +50,17 @@ public class ExProductCheckService {
                 .stream()
                 .filter(product -> Objects.nonNull(product.getUrlForValidating())).collect(Collectors.toList());
 
-        int size = products.size();
         List<ProductCheck> productChecks = new CopyOnWriteArrayList<>();
-        AtomicInteger counter = new AtomicInteger(0);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                + "AppleWebKit/537.36 (KHTML, like Gecko) "
-                + "Chrome/113.0.0.0 Safari/537.36");
-        headers.set("Accept-Language", "ru-RU,ru;q=0.9,en;q=0.8");
-        headers.set("Accept", "text/html");
-
-//        ResponseEntity<String> forEntity = restTemplate.getForEntity("https://kratki.ua/ru/mba-17-gilotina-ru", String.class);
-
-
-        products.forEach(product -> {
+        for (Product product : products) {
             try {
-
-                log.error(product.getUrlForValidating());
-//                restTemplate.getForEntity(product.getUrlForValidating(), String.class);
-                HttpEntity<String> entity = new HttpEntity<>(headers);
-                ResponseEntity<String> response = restTemplate.exchange(
-                        product.getUrlForValidating(),
-                        HttpMethod.GET,
-                        entity,
-                        String.class
-                );
-                log.error("_____________________________________________VALID");
+                Optional<Document> document = docQueryParser.getDocument(product.getUrlForValidating());
+                if (document.isEmpty()) productChecks.add(new ProductCheck(product, HttpStatus.NOT_FOUND, "---"));
             } catch (Exception e) {
                 productChecks.add(new ProductCheck(product, HttpStatus.NOT_FOUND, e.getMessage()));
-                log.error("NOT_VALID_____________________________________________");
-            } finally {
-                log.error(size + "|" + counter.incrementAndGet()); // Увеличиваем счетчик после каждой итерации
             }
-        });
-//        for (Product product : products) {
-//            try {
-//                restTemplate.getForEntity(product.getUrlForValidating(), String.class);
-//            } catch (HttpClientErrorException e) {
-//                productChecks.add(new ProductCheck(product, e.getStatusCode()));
-//            }
-//        }
+        }
+
         return productChecks;
     }
 
