@@ -25,7 +25,7 @@ public class DocQueryParserImpl implements DocQueryParser {
     private static final Logger log = LoggerFactory.getLogger(DocQueryParserImpl.class);
 
     private final List<Proxy> proxies = List.of(
-            new Proxy(Proxy.Type.HTTP, new InetSocketAddress("91.124.110.41", 50100))
+            new Proxy(Proxy.Type.HTTP, new InetSocketAddress("91.124.109.75", 50100))
     );
 
     public DocQueryParserImpl() {
