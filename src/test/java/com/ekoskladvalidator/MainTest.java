@@ -22,6 +22,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -55,6 +59,9 @@ public class MainTest {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Test
     public void check() throws IOException, MessagingException {
 //        List<ProductCheck> productChecks = exProductCheckService.checkProducts();
@@ -82,6 +89,29 @@ int i =0;
             Optional<String> value = docQueryParser.getStringBuyXpath(document, presenceMatcher.getPresencePathQuery());
             int i = 0;
         }
+    }
+
+    @Test
+    public void getForEntity(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                + "AppleWebKit/537.36 (KHTML, like Gecko) "
+                + "Chrome/113.0.0.0 Safari/537.36");
+        headers.set("Accept-Language", "ru-RU,ru;q=0.9,en;q=0.8");
+        headers.set("Accept", "text/html");
+
+//        ResponseEntity<String> forEntity = restTemplate.getForEntity("https://kratki.ua/ru/mba-17-gilotina-ru", String.class);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://kratki.ua/ru/mba-17-gilotina-ru",
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+
+
+        int i = 0;
     }
     @Test
     public void testSec() throws URISyntaxException, IOException, NoSupplierResourceException, NotValidQueryException {

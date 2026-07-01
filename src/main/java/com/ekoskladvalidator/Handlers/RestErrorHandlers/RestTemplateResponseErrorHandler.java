@@ -29,13 +29,13 @@ public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
 
         if (clientHttpResponse.getStatusCode()
                 .series() == HttpStatus.Series.SERVER_ERROR) {
-            logger.error("Server error during request");
+            logger.error("Server error during REST request: status={}", clientHttpResponse.getStatusCode());
         } else if (clientHttpResponse.getStatusCode()
                 .series() == HttpStatus.Series.CLIENT_ERROR) {
-            logger.error("Client error during request");
             if (clientHttpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-//                throw new NotFoundException();
-                logger.error("Resource not found error during request");
+                logger.warn("Resource not found during REST request: status={}", clientHttpResponse.getStatusCode());
+            } else {
+                logger.warn("Client error during REST request: status={}", clientHttpResponse.getStatusCode());
             }
         }
     }

@@ -16,7 +16,6 @@
 <style>
     #name {
         text-align: left;
-        max-width: 800px;
     }
 
     td {
@@ -28,8 +27,25 @@
 
     th {
         text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
+    #orderListTable {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    #orderListTable th:nth-child(1), #orderListTable td:nth-child(1) { width: 9%; }
+    #orderListTable th:nth-child(2), #orderListTable td:nth-child(2) { width: 6%; }
+    #orderListTable th:nth-child(3), #orderListTable td:nth-child(3) { width: 28%; }
+    #orderListTable th:nth-child(4), #orderListTable td:nth-child(4) { width: 14%; }
+    #orderListTable th:nth-child(5), #orderListTable td:nth-child(5) { width: 12%; }
+    #orderListTable th:nth-child(6), #orderListTable td:nth-child(6) { width: 4%; }
+    #orderListTable th:nth-child(7), #orderListTable td:nth-child(7) { width: 9%; }
+    #orderListTable th:nth-child(8), #orderListTable td:nth-child(8) { width: 9%; }
+    #orderListTable th:nth-child(9), #orderListTable td:nth-child(9) { width: 9%; }
 </style>
 
 </div>
@@ -254,7 +270,13 @@
             </td>
             <!--            <td th:text="${#dates.format(product.getLastValidationDate(), 'dd-MM-yyyy')}"></td>-->
             <td th:text="${product.getLastValidationDate()!=null} ? ${product.getLastValidationDate().toString()} : '-----' "></td>
-            <td th:text="${product.getPresence() == null ? '--' : product.getPresence().getAlias()}"></td>
+            <td>
+                <span th:if="${product.getPresence() != null}"
+                      class="badge-presence"
+                      th:classappend="'presence-' + ${product.getPresence().name()}"
+                      th:text="${product.getPresence().getAlias()}"></span>
+                <span th:if="${product.getPresence() == null}">--</span>
+            </td>
             <td>
                 <span class="status"
                       th:classappend="${product.isValidationStatus()} ? text-success : text-danger ">&bull;</span>

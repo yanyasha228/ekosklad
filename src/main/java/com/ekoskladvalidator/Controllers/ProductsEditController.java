@@ -9,7 +9,8 @@ import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.PromApiKeyService;
 import com.ekoskladvalidator.Validators.ProductValidator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ import java.util.*;
 @RequestMapping("/products/{id}/edit")
 public class ProductsEditController {
 
-    private static final Logger logger = Logger.getLogger(ProductsEditController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductsEditController.class);
 
     private final ProductService productService;
 
@@ -81,7 +82,8 @@ public class ProductsEditController {
 
                 productValidator.validateOne(savedProduct);
             } catch (ImpossibleEntitySaveUpdateException | InterruptedException e) {
-                logger.warn(e);
+                if (e instanceof InterruptedException) Thread.currentThread().interrupt();
+                logger.warn("Failed to validate product id={} after manual edit", productId, e);
             }
         }
 

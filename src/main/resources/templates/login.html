@@ -6,11 +6,50 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
           integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/csssource/all_pages_stylesheet.css}">
 
     <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+        }
+
         #loginSet {
             margin: auto;
-            margin-top: 100px;
+        }
+
+        .login-card {
+            background: var(--color-surface, #fff);
+            border: 1px solid var(--color-border, #e5e8ee);
+            border-radius: var(--radius-lg, 14px);
+            box-shadow: var(--shadow-md, 0 6px 20px rgba(16, 24, 40, .08));
+            padding: 40px 36px;
+        }
+
+        .login-card h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px !important;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--color-text-muted, #6b7280);
+            margin-bottom: 28px;
+            font-size: .88rem;
+        }
+
+        .login-card .form-group {
+            margin-bottom: 18px;
+        }
+
+        .login-card .btn-primary {
+            padding: 10px 0;
         }
     </style>
 
@@ -20,40 +59,42 @@
 
 <div class="container">
 
-    <div class="row align-items-center" style="margin-top:20px">
-        <div id ="loginSet" class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-            <form th:action="@{/login}" method="post">
-                <fieldset>
-                    <h1 style="text-align: center ;
-                     margin-bottom: 40px">Войти</h1>
+    <div class="row align-items-center">
+        <div id="loginSet" class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+            <div class="login-card">
+                <form th:action="@{/login}" method="post">
+                    <fieldset>
+                        <h1>EkoSklad</h1>
+                        <div class="login-subtitle">Войдите, чтобы продолжить</div>
 
-                    <div th:if="${param.error}">
-                        <div class="alert alert-danger">
-                            Неверный пароль или логин
+                        <div th:if="${param.error}">
+                            <div class="alert alert-danger">
+                                Неверный пароль или логин
+                            </div>
                         </div>
-                    </div>
-                    <div th:if="${param.logout}">
-                        <div class="alert alert-info">
-                            Вы успешно вышли из системы
+                        <div th:if="${param.logout}">
+                            <div class="alert alert-info">
+                                Вы успешно вышли из системы
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <input type="text" name="username" id="username" class="form-control input-lg"
-                               placeholder="Логин" required="true" autofocus="true"/>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="password" id="password" class="form-control input-lg"
-                               placeholder="Пароль" required="true"/>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Войти"/>
+                        <div class="form-group">
+                            <input type="text" name="username" id="username" class="form-control input-lg"
+                                   placeholder="Логин" required="true" autofocus="true"/>
                         </div>
-                    </div>
-                </fieldset>
-            </form>
+                        <div class="form-group">
+                            <input type="password" name="password" id="password" class="form-control input-lg"
+                                   placeholder="Пароль" required="true"/>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <input type="submit" class="btn btn-lg btn-primary btn-block" value="Войти"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         </div>
     </div>
 

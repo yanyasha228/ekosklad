@@ -49,19 +49,17 @@ public class ProductRestDaoImpl implements ProductRestDao {
         headers.set("Authorization", String.format("Bearer %s", apiToken));
         HttpEntity<ProductResponse> entity = new HttpEntity<ProductResponse>(headers);
 
-        logger.error("Executing entity with id: " + id);
+        logger.debug("Fetching Prom.ua product by id={}", id);
         ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByIdUri, id), HttpMethod.GET, entity, ProductResponse.class);
 
         if (productResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productResponseEntity.getBody() != null) {
-                logger.error("Executing final entity with id: " + productResponseEntity.getBody().getProduct().getId());
                 return Optional.of(productResponseEntity.getBody().getProduct());
-
             } else {
-                logger.error("LOOOOOOSEEEEE BODY IS NULL");
+                logger.warn("Prom.ua returned OK with an empty body for product id={}", id);
             }
         } else {
-            logger.error("LOOOOOOSEEEEE STATUS CODE : " + productResponseEntity.getStatusCode());
+            logger.warn("Prom.ua request failed with status={} for product id={}", productResponseEntity.getStatusCode(), id);
         }
 
         return Optional.empty();
@@ -75,19 +73,17 @@ public class ProductRestDaoImpl implements ProductRestDao {
         headers.set("Authorization", String.format("Bearer %s", promApiKey.getApiKey()));
         HttpEntity<ProductResponse> entity = new HttpEntity<ProductResponse>(headers);
 
-        logger.error("Executing entity with id: " + id);
+        logger.debug("Fetching Prom.ua product by id={} shop={}", id, promApiKey.getShopName());
         ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByIdUri, id), HttpMethod.GET, entity, ProductResponse.class);
 
         if (productResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productResponseEntity.getBody() != null) {
-                logger.error("Executing final entity with id: " + productResponseEntity.getBody().getProduct().getId());
                 return Optional.of(productResponseEntity.getBody().getProduct());
-
             } else {
-                logger.error("LOOOOOOSEEEEE BODY IS NULL");
+                logger.warn("Prom.ua returned OK with an empty body for product id={} shop={}", id, promApiKey.getShopName());
             }
         } else {
-            logger.error("LOOOOOOSEEEEE STATUS CODE : " + productResponseEntity.getStatusCode());
+            logger.warn("Prom.ua request failed with status={} for product id={} shop={}", productResponseEntity.getStatusCode(), id, promApiKey.getShopName());
         }
 
         return Optional.empty();
@@ -108,6 +104,8 @@ public class ProductRestDaoImpl implements ProductRestDao {
                 productDtos.addAll(productsListResponseEntity.getBody().getProducts());
                 return productDtos;
             }
+        } else {
+            logger.warn("Prom.ua request failed with status={} for group id={}", productsListResponseEntity.getStatusCode(), groupId);
         }
 
         return Collections.emptyList();
@@ -125,31 +123,32 @@ public class ProductRestDaoImpl implements ProductRestDao {
 
         HttpEntity<List<ProductDto>> entity = new HttpEntity<List<ProductDto>>(productDtos, headers);
 
-        logger.error("Posting entity with id: " + productDtos.get(0).getId());
+        logger.debug("Posting {} products to Prom.ua, starting with id={}", productDtos.size(), productDtos.get(0).getId());
         ResponseEntity<EditProductsResponse> productsEditResponseEntity = restTemplate.exchange(postProductsEditUri, HttpMethod.POST, entity, EditProductsResponse.class);
 
         if (productsEditResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productsEditResponseEntity.getBody() != null) {
+                List<Long> notProcessedIds = new ArrayList<>();
                 for (ProductDto productDtoIter : productDtos) {
-                    for (Long prodUpId : productsEditResponseEntity
-                            .getBody().getProcessed_ids()
-                    ) {
+                    boolean processed = false;
+                    for (Long prodUpId : productsEditResponseEntity.getBody().getProcessed_ids()) {
                         if (productDtoIter.getId() == prodUpId) {
                             productDtoResponseList.add(productDtoIter);
-                            logger.error("Posting final WON with id: " + productDtoIter.getId());
-                        } else {
-                            logger.error("Posting final LOSE with id: " + productDtoIter.getId());
+                            processed = true;
+                            break;
                         }
-
                     }
+                    if (!processed) notProcessedIds.add(productDtoIter.getId());
                 }
+                logger.debug("Prom.ua accepted {}/{} products; rejected ids={}",
+                        productDtoResponseList.size(), productDtos.size(), notProcessedIds);
                 return productDtoResponseList;
             } else {
-                logger.error("LOOOOOOSEEEEE BODY IS NULL");
+                logger.warn("Prom.ua returned OK with an empty body while posting {} products", productDtos.size());
             }
 
         } else {
-            logger.error("LOOOOOOSEEEEE STATUS CODE : " + productsEditResponseEntity.getStatusCode());
+            logger.warn("Prom.ua request failed with status={} while posting {} products", productsEditResponseEntity.getStatusCode(), productDtos.size());
         }
         return Collections.emptyList();
 
@@ -166,7 +165,7 @@ public class ProductRestDaoImpl implements ProductRestDao {
 
         HttpEntity<List<ProductDto>> entity = new HttpEntity<>(productDtos, headers);
 
-        logger.error("Posting entity with id: " + productDtos.get(0).getId());
+        logger.debug("Posting {} products to Prom.ua shop={}, starting with id={}", productDtos.size(), promApiKey.getShopName(), productDtos.get(0).getId());
         ResponseEntity<EditProductsResponse> productsEditResponseEntity = restTemplate.exchange(postProductsEditUri, HttpMethod.POST, entity, EditProductsResponse.class);
 
         if (productsEditResponseEntity.getStatusCode() == HttpStatus.OK) {
@@ -180,14 +179,16 @@ public class ProductRestDaoImpl implements ProductRestDao {
                         }
                     }
                 }
-                logger.error("Posting Products WON with id: " + "\n" + productDtoResponseList.stream().map(ProductDto::getId).collect(Collectors.toList()));
+                logger.debug("Prom.ua shop={} accepted products with ids={}", promApiKey.getShopName(),
+                        productDtoResponseList.stream().map(ProductDto::getId).collect(Collectors.toList()));
                 return productDtoResponseList;
             } else {
-                logger.error("LOOOOOOSEEEEE BODY IS NULL");
+                logger.warn("Prom.ua returned OK with an empty body while posting {} products to shop={}", productDtos.size(), promApiKey.getShopName());
             }
 
         } else {
-            logger.error("LOOOOOOSEEEEE STATUS CODE : " + productsEditResponseEntity.getStatusCode());
+            logger.warn("Prom.ua request failed with status={} while posting {} products to shop={}",
+                    productsEditResponseEntity.getStatusCode(), productDtos.size(), promApiKey.getShopName());
         }
         return Collections.emptyList();
 
@@ -200,19 +201,17 @@ public class ProductRestDaoImpl implements ProductRestDao {
         headers.set("Authorization", String.format("Bearer %s", promApiKey.getApiKey()));
         HttpEntity<ProductResponse> entity = new HttpEntity<ProductResponse>(headers);
 
-        logger.error("Executing entity with id: " + external_id);
+        logger.debug("Fetching Prom.ua product by external_id={} shop={}", external_id, promApiKey.getShopName());
         ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(String.format(getProductByExternalIdUri, external_id), HttpMethod.GET, entity, ProductResponse.class);
 
         if (productResponseEntity.getStatusCode() == HttpStatus.OK) {
             if (productResponseEntity.getBody() != null) {
-                logger.error("Executing final entity with id: " + productResponseEntity.getBody().getProduct().getId());
                 return Optional.of(productResponseEntity.getBody().getProduct());
-
             } else {
-                logger.error("LOOOOOOSEEEEE BODY IS NULL");
+                logger.warn("Prom.ua returned OK with an empty body for product external_id={} shop={}", external_id, promApiKey.getShopName());
             }
         } else {
-            logger.error("LOOOOOOSEEEEE STATUS CODE : " + productResponseEntity.getStatusCode());
+            logger.warn("Prom.ua request failed with status={} for product external_id={} shop={}", productResponseEntity.getStatusCode(), external_id, promApiKey.getShopName());
         }
 
         return Optional.empty();

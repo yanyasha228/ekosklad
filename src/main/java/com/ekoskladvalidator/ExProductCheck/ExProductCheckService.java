@@ -5,8 +5,6 @@ import com.ekoskladvalidator.Models.Product;
 import com.ekoskladvalidator.ParseUtils.DocQueryParser;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.ProductServiceImpl;
-import com.ekoskladvalidator.Validators.ProductValidator;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +32,10 @@ public class ExProductCheckService {
     @Autowired
     private ProductService productService;
 
-    private static Logger logger = LoggerFactory.getLogger(ProductValidator.class);
-
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     @Autowired
     private DocQueryParser docQueryParser;
-
 
     private static final Logger log = LoggerFactory.getLogger(ExProductCheckService.class);
 
@@ -50,16 +45,24 @@ public class ExProductCheckService {
                 .stream()
                 .filter(product -> Objects.nonNull(product.getUrlForValidating())).collect(Collectors.toList());
 
+        log.info("Starting daily reachability check for {} products", products.size());
+
         List<ProductCheck> productChecks = new CopyOnWriteArrayList<>();
 
         for (Product product : products) {
             try {
                 Optional<Document> document = docQueryParser.getDocument(product.getUrlForValidating());
-                if (document.isEmpty()) productChecks.add(new ProductCheck(product, HttpStatus.NOT_FOUND, "---"));
+                if (document.isEmpty()) {
+                    log.warn("Product id={} unreachable: no document returned for url={}", product.getId(), product.getUrlForValidating());
+                    productChecks.add(new ProductCheck(product, HttpStatus.NOT_FOUND, "---"));
+                }
             } catch (Exception e) {
+                log.warn("Product id={} unreachable: {} (url={})", product.getId(), e.getMessage(), product.getUrlForValidating());
                 productChecks.add(new ProductCheck(product, HttpStatus.NOT_FOUND, e.getMessage()));
             }
         }
+
+        log.info("Finished daily reachability check: {} of {} products unreachable", productChecks.size(), products.size());
 
         return productChecks;
     }

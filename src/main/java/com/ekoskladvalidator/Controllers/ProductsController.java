@@ -8,7 +8,8 @@ import com.ekoskladvalidator.Services.GroupService;
 import com.ekoskladvalidator.Services.ProductService;
 import com.ekoskladvalidator.Services.PromApiKeyService;
 import com.ekoskladvalidator.Services.SupplierResourceService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @RequestMapping("/products")
 public class ProductsController {
 
-    private static final Logger logger = Logger.getLogger(ProductsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductsController.class);
 
     private final ProductService productService;
 
