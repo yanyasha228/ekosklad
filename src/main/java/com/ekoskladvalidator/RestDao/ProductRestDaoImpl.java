@@ -82,6 +82,9 @@ public class ProductRestDaoImpl implements ProductRestDao {
             } else {
                 logger.warn("Prom.ua returned OK with an empty body for product id={} shop={}", id, promApiKey.getShopName());
             }
+        } else if (productResponseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
+            // Expected: product deleted on the site but still present in the parser DB.
+            logger.debug("Prom.ua product id={} not found (deleted on site), shop={}", id, promApiKey.getShopName());
         } else {
             logger.warn("Prom.ua request failed with status={} for product id={} shop={}", productResponseEntity.getStatusCode(), id, promApiKey.getShopName());
         }

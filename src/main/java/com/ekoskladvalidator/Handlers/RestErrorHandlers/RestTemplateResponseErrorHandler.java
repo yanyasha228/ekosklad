@@ -33,7 +33,8 @@ public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
         } else if (clientHttpResponse.getStatusCode()
                 .series() == HttpStatus.Series.CLIENT_ERROR) {
             if (clientHttpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-                logger.warn("Resource not found during REST request: status={}", clientHttpResponse.getStatusCode());
+                // Expected for products deleted on the site but still present in the parser DB.
+                logger.debug("Resource not found during REST request: status={}", clientHttpResponse.getStatusCode());
             } else {
                 logger.warn("Client error during REST request: status={}", clientHttpResponse.getStatusCode());
             }
