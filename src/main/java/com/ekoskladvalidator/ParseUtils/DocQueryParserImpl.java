@@ -7,14 +7,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import us.codecraft.xsoup.Xsoup;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.net.SocketTimeoutException;
-import java.nio.charset.MalformedInputException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,12 +24,34 @@ public class DocQueryParserImpl implements DocQueryParser {
 
     private static final Logger log = LoggerFactory.getLogger(DocQueryParserImpl.class);
 
-    private final List<Proxy> proxies = List.of(
-            new Proxy(Proxy.Type.HTTP, new InetSocketAddress("94.154.42.109", 50100)),
-            new Proxy(Proxy.Type.HTTP, new InetSocketAddress("45.13.189.74", 50100))
-    );
+    private final List<Proxy> proxies = new ArrayList<>();
 
-    public DocQueryParserImpl() {
+    private final int fetchTimeoutMs;
+
+    public DocQueryParserImpl(@Value("${parser.proxies:}") List<String> proxyDefinitions,
+                              @Value("${parser.fetch-timeout-ms:8000}") int fetchTimeoutMs) {
+        this.fetchTimeoutMs = fetchTimeoutMs;
+
+        for (String definition : proxyDefinitions) {
+            String trimmed = definition.trim();
+            if (trimmed.isEmpty()) continue;
+
+            int separatorIndex = trimmed.lastIndexOf(':');
+            if (separatorIndex <= 0 || separatorIndex == trimmed.length() - 1) {
+                log.warn("Ignoring malformed proxy definition '{}' (expected host:port)", trimmed);
+                continue;
+            }
+
+            String host = trimmed.substring(0, separatorIndex);
+            try {
+                int port = Integer.parseInt(trimmed.substring(separatorIndex + 1));
+                proxies.add(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port)));
+            } catch (NumberFormatException e) {
+                log.warn("Ignoring proxy definition '{}' with non-numeric port", trimmed);
+            }
+        }
+
+        log.info("DocQueryParser configured with {} proxies, fetch timeout {} ms", proxies.size(), fetchTimeoutMs);
     }
 
     @Override
@@ -68,7 +90,7 @@ public class DocQueryParserImpl implements DocQueryParser {
 
     private Document fetch(String url, Proxy proxy) throws IOException {
         var connection = Jsoup.connect(url)
-                .timeout(30000)
+                .timeout(fetchTimeoutMs)
                 .ignoreHttpErrors(false)
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
                         "AppleWebKit/537.36 (KHTML, like Gecko) " +
